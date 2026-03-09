@@ -6,52 +6,325 @@
     <title>PRISM | Physical AI Robotics Intelligence System Manager</title>
     <link rel="stylesheet" href="./assets/css/page.css" />
     <style>
-      .hero-simple { padding-top: 5.6rem; padding-bottom: 2.8rem; }
-      .hero-shell { padding: 1rem 0 0; text-align: center; }
-      .section-title { margin: 0; font-size: clamp(1.5rem, 3vw, 2.35rem); color: #f5f8ff; letter-spacing: -.03em; font-weight: 600; }
-      .section-copy { margin-top: .55rem; color: var(--nexus-text-secondary); line-height: 1.7; max-width: 760px; font-size: .94rem; }
-      .core-grid { margin-top: 1rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
-      .core-card { border: 1px solid rgba(61,61,74,.78); border-radius: 22px; background: linear-gradient(180deg, rgba(19,21,31,.92) 0%, rgba(12,13,20,.95) 100%); padding: 1rem; min-height: 250px; }
-      .core-card .eyebrow-small { font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--nexus-text-muted); }
-      .core-card h3 { margin: .4rem 0 0; font-size: 1.2rem; color: #f7f8fd; }
-      .core-card p { margin: .55rem 0 0; color: var(--nexus-text-secondary); line-height: 1.6; font-size: .88rem; }
-      .core-list { margin-top: .85rem; display: grid; gap: .45rem; }
-      .core-item { border-top: 1px solid rgba(61,61,74,.54); padding-top: .5rem; }
-      .core-item strong { display: block; font-size: .84rem; color: #ecf2ff; }
-      .core-item span { display: block; margin-top: .16rem; font-size: .78rem; color: var(--nexus-text-secondary); line-height: 1.5; }
-      .surface-grid { margin-top: 1rem; display: grid; grid-template-columns: 1.3fr 1fr; gap: 1rem; }
-      .surface-panel { border: 1px solid rgba(61,61,74,.78); border-radius: 22px; background: rgba(18,18,26,.68); padding: 1rem; }
-      .surface-panel h3 { margin: 0; font-size: 1rem; color: #f7f8fd; }
-      .surface-panel p { margin: .45rem 0 0; color: var(--nexus-text-secondary); line-height: 1.6; font-size: .86rem; }
-      .surface-list { margin-top: .85rem; display: grid; gap: .7rem; }
-      .surface-item { display: grid; grid-template-columns: 140px 1fr; gap: .7rem; align-items: start; border-top: 1px solid rgba(61,61,74,.54); padding-top: .7rem; }
-      .surface-item strong { color: #f0f4ff; font-size: .84rem; }
-      .surface-item span { color: var(--nexus-text-secondary); font-size: .8rem; line-height: 1.55; }
-      .guide-search { width: min(520px, 100%); border: 1px solid rgba(61,61,74,.78); border-radius: 14px; padding: .78rem .9rem; background: rgba(12,13,20,.9); color: var(--nexus-text-primary); }
-      .guide-grid { margin-top: 1rem; display: grid; gap: .75rem; }
-      .guide-entry { border: 1px solid rgba(61,61,74,.78); border-radius: 18px; background: rgba(18,18,26,.68); overflow: hidden; }
-      .guide-summary { list-style: none; cursor: pointer; padding: 1rem; display: grid; grid-template-columns: 180px 1fr 24px; gap: .9rem; align-items: start; }
-      .guide-summary::-webkit-details-marker { display: none; }
-      .guide-tag { display: inline-block; padding: .28rem .5rem; border-radius: 999px; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: #dfe8ff; border: 1px solid rgba(168,85,247,.24); background: rgba(168,85,247,.1); }
-      .guide-name { margin-top: .45rem; font-size: 1.02rem; color: #f7f8fd; }
-      .guide-brief { color: var(--nexus-text-secondary); line-height: 1.6; font-size: .85rem; }
-      .guide-arrow { color: var(--nexus-text-muted); font-size: 1rem; align-self: center; transition: transform .18s ease; }
-      .guide-entry[open] .guide-arrow { transform: rotate(45deg); }
-      .guide-body { padding: 0 1rem 1rem; border-top: 1px solid rgba(61,61,74,.6); }
-      .guide-body-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .9rem; margin-top: .9rem; }
-      .guide-block h4 { margin: 0; font-size: .82rem; letter-spacing: .08em; text-transform: uppercase; color: var(--nexus-text-muted); }
-      .guide-block ul { margin: .5rem 0 0; padding-left: 1rem; }
-      .guide-block li { color: var(--nexus-text-secondary); font-size: .82rem; line-height: 1.55; margin: .2rem 0; }
-      .guide-link { margin-top: .85rem; display: inline-block; color: #b6f1ff; font-size: .78rem; text-decoration: none; }
-      @media (max-width: 1080px) {
-        .core-grid { grid-template-columns: 1fr; }
-        .surface-grid { grid-template-columns: 1fr; }
-        .surface-item { grid-template-columns: 1fr; }
-        .guide-body-grid { grid-template-columns: 1fr; }
-        .guide-summary { grid-template-columns: 1fr 24px; }
+      .topbar-home {
+        width: min(1180px, calc(100% - 2rem));
       }
-      @media (max-width: 740px) {
-        .hero-shell { padding: .5rem 0 0; }
+      .docs-layout {
+        display: grid;
+        grid-template-columns: 270px minmax(0, 1fr);
+        gap: 1rem;
+        align-items: start;
+        padding: 1.2rem 0 2rem;
+      }
+      .docs-sidebar {
+        position: sticky;
+        top: 5.2rem;
+        border-radius: 24px;
+        padding: 1rem;
+        background: rgba(18, 18, 26, 0.78);
+        border: 1px solid rgba(168, 85, 247, 0.16);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.18), 0 0 28px rgba(168, 85, 247, 0.08);
+      }
+      .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .sidebar-logo img {
+        height: 28px;
+        width: auto;
+      }
+      .sidebar-logo strong {
+        display: block;
+        color: #f8fbff;
+        font-size: 0.96rem;
+      }
+      .sidebar-logo span {
+        display: block;
+        margin-top: 0.12rem;
+        color: var(--nexus-text-muted);
+        font-size: 0.74rem;
+      }
+      .sidebar-search {
+        width: 100%;
+        border-radius: 14px;
+        border: 1px solid rgba(168, 85, 247, 0.18);
+        background: rgba(12, 13, 20, 0.9);
+        color: var(--nexus-text-primary);
+        padding: 0.82rem 0.9rem;
+        font: inherit;
+      }
+      .sidebar-search:focus {
+        outline: none;
+        border-color: rgba(168, 85, 247, 0.45);
+        box-shadow: 0 0 18px rgba(168, 85, 247, 0.16);
+      }
+      .sidebar-section {
+        margin-top: 1rem;
+      }
+      .sidebar-label {
+        display: block;
+        margin-bottom: 0.55rem;
+        color: var(--nexus-text-muted);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+      .sidebar-list {
+        display: grid;
+        gap: 0.34rem;
+      }
+      .sidebar-link {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.55rem;
+        align-items: center;
+        padding: 0.78rem 0.82rem;
+        border-radius: 14px;
+        text-decoration: none;
+        color: inherit;
+        border: 1px solid transparent;
+        transition: all 0.22s ease;
+      }
+      .sidebar-link:hover {
+        border-color: rgba(168, 85, 247, 0.2);
+        background: rgba(255,255,255,0.04);
+        transform: translateX(2px);
+      }
+      .sidebar-link strong {
+        display: block;
+        color: #eef4ff;
+        font-size: 0.86rem;
+      }
+      .sidebar-link span {
+        display: block;
+        margin-top: 0.12rem;
+        color: var(--nexus-text-secondary);
+        font-size: 0.75rem;
+        line-height: 1.45;
+      }
+      .sidebar-link em {
+        color: var(--nexus-text-muted);
+        font-style: normal;
+        font-size: 0.78rem;
+      }
+      .home-main {
+        display: grid;
+        gap: 1rem;
+      }
+      .home-hero {
+        padding: 1.3rem;
+        border-radius: 28px;
+      }
+      .home-hero-top {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+      }
+      .home-hero-copy {
+        width: 100%;
+        text-align: center;
+      }
+      .home-hero-copy .title-stack {
+        text-align: center;
+      }
+      .home-hero-copy .title-stack {
+        margin-top: 0.85rem;
+      }
+      .home-hero-copy p {
+        margin: 0.7rem 0 0;
+        max-width: 820px;
+        color: var(--nexus-text-secondary);
+        line-height: 1.7;
+        font-size: 0.96rem;
+      }
+      .home-version {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.42rem 0.78rem;
+        border-radius: 999px;
+        background: rgba(18, 18, 26, 0.72);
+        border: 1px solid rgba(168, 85, 247, 0.24);
+        color: var(--nexus-text-secondary);
+        font-size: 0.72rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      .hero-quick-grid {
+        margin-top: 1rem;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+      .hero-quick-card {
+        padding: 0.95rem 1rem;
+        border-radius: 18px;
+        background: rgba(18, 18, 26, 0.72);
+        border: 1px solid rgba(168, 85, 247, 0.14);
+      }
+      .hero-quick-card span {
+        display: block;
+        color: var(--nexus-text-muted);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .hero-quick-card strong {
+        display: block;
+        margin-top: 0.32rem;
+        color: #f7f9ff;
+        font-size: 0.95rem;
+      }
+      .hero-quick-card p {
+        margin: 0.35rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.82rem;
+        line-height: 1.55;
+      }
+      .home-section {
+        border-radius: 24px;
+        padding: 1rem 1.05rem;
+        background: rgba(18, 18, 26, 0.7);
+        border: 1px solid rgba(168, 85, 247, 0.14);
+        backdrop-filter: blur(16px);
+      }
+      .home-section-head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0.9rem;
+      }
+      .home-section-head h2 {
+        margin: 0;
+        color: #f8fbff;
+        font-size: 1.3rem;
+        letter-spacing: -0.03em;
+      }
+      .home-section-head p {
+        margin: 0.35rem 0 0;
+        color: var(--nexus-text-secondary);
+        max-width: 760px;
+        line-height: 1.6;
+        font-size: 0.9rem;
+      }
+      .screen-groups {
+        display: grid;
+        gap: 1rem;
+      }
+      .screen-group {
+        border-radius: 22px;
+        padding: 1rem;
+        background: linear-gradient(180deg, rgba(18, 18, 26, 0.86) 0%, rgba(11, 12, 18, 0.92) 100%);
+        border: 1px solid rgba(168, 85, 247, 0.14);
+      }
+      .screen-group-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.34rem 0.62rem;
+        border-radius: 999px;
+        border: 1px solid rgba(34, 211, 238, 0.22);
+        background: rgba(34, 211, 238, 0.08);
+        color: #b6f1ff;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .screen-grid {
+        margin-top: 0.9rem;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.85rem;
+      }
+      .screen-card {
+        display: block;
+        text-decoration: none;
+        padding: 1rem;
+        border-radius: 18px;
+        border: 1px solid rgba(168, 85, 247, 0.12);
+        background: rgba(18, 18, 26, 0.76);
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .screen-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(168, 85, 247, 0.28);
+        box-shadow: 0 0 28px rgba(168, 85, 247, 0.12);
+      }
+      .screen-card strong {
+        display: block;
+        color: #f8fbff;
+        font-size: 0.98rem;
+      }
+      .screen-card span {
+        display: block;
+        margin-top: 0.24rem;
+        color: #cfe7ff;
+        font-size: 0.79rem;
+      }
+      .screen-card p {
+        margin: 0.55rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.84rem;
+        line-height: 1.58;
+      }
+      .screen-card em {
+        display: inline-block;
+        margin-top: 0.7rem;
+        color: #b6f1ff;
+        font-style: normal;
+        font-size: 0.76rem;
+      }
+      .ops-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+      .ops-card {
+        border-radius: 18px;
+        padding: 0.95rem 1rem;
+        background: rgba(18, 18, 26, 0.76);
+        border: 1px solid rgba(168, 85, 247, 0.12);
+      }
+      .ops-card strong {
+        display: block;
+        color: #f7f9ff;
+        font-size: 0.92rem;
+      }
+      .ops-card p {
+        margin: 0.42rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.83rem;
+        line-height: 1.58;
+      }
+      @media (max-width: 1100px) {
+        .docs-layout {
+          grid-template-columns: 1fr;
+        }
+        .docs-sidebar {
+          position: static;
+        }
+      }
+      @media (max-width: 860px) {
+        .hero-quick-grid,
+        .screen-grid,
+        .ops-grid {
+          grid-template-columns: 1fr;
+        }
+        .home-hero-top,
+        .home-section-head {
+          flex-direction: column;
+          align-items: center;
+        }
       }
     </style>
   </head>
@@ -64,176 +337,147 @@
       <div class="bg-noise"></div>
     </div>
 
-    <header class="container topbar">
-      <a class="brand" href="#overview" aria-label="PRISM home">
+    <header class="container topbar topbar-home">
+      <a class="brand" href="./index.html" aria-label="PRISM home">
         <img src="./assets/images/logo_nexus.png" alt="PRISM" />
       </a>
       <nav class="nav" aria-label="Primary">
-        <a href="#core-loop">Workflow</a>
-        <a href="#surface">Inside PRISM</a>
-        <a href="#guides">Screens</a>
+        <a href="#overview">Overview</a>
+        <a href="#directory">Directory</a>
+        <a href="#workflow">Workflow</a>
       </nav>
     </header>
 
-    <main class="container">
-      <section class="hero hero-simple" id="overview">
-        <div class="hero-shell">
-          <div class="version-badge" style="justify-content:center;">
-            <span class="version-dot-wrap"><span class="version-dot ping"></span><span class="version-dot"></span></span>
-            <span class="version-label">v1.0.0</span>
-          </div>
-
-          <div class="logo-row">
-            <img src="./assets/images/LG_AI_Research_LOGO_E_BASIC.png" alt="LG AI Research" />
-            <div class="logo-divider"></div>
-            <img src="./assets/images/logo_nexus.png" alt="PRISM" style="height:56px; opacity:1;" />
-          </div>
-
-          <div class="title-stack">
-            <span class="prism-glow">PRISM</span>
-            <span class="prism">PRISM</span>
-            <span class="line">Physical AI Robotics &amp;</span>
-            <span class="line italic">Intelligence System Manager</span>
+    <main class="container docs-layout" id="overview">
+      <aside class="docs-sidebar glass-strong">
+        <div class="sidebar-logo">
+          <img src="./assets/images/logo_nexus.png" alt="PRISM" />
+          <div>
+            <strong>PRISM Features</strong>
+            <span>Features</span>
           </div>
         </div>
-      </section>
+        <input class="sidebar-search" id="screenSearch" type="search" placeholder="Find a screen" />
+        <div id="sidebarNav"></div>
+      </aside>
 
-      <section class="section" id="core-loop">
-        <h2 class="section-title">Workflow</h2>
-        <p class="section-copy">Move from real robot data collection to policy training and on-hardware validation inside one connected product flow.</p>
-        <div class="core-grid">
-          <article class="core-card">
-            <span class="eyebrow-small">Collect</span>
-            <h3>Capture robot data with context</h3>
-            <p>Capture demos on real hardware together with multi-camera context, TF state, and outcome labels.</p>
-            <div class="core-list">
-              <div class="core-item"><strong>Record</strong><span>Episode capture with success and failure annotation.</span></div>
-              <div class="core-item"><strong>Devices</strong><span>Pre-flight checks for cameras and robot connectivity.</span></div>
-              <div class="core-item"><strong>Data Tools</strong><span>Clean, merge, and validate collected datasets.</span></div>
+      <div class="home-main">
+        <section class="home-hero hero-premium glass-strong nexus-glow" id="overview-card">
+          <div class="home-hero-top">
+            <div class="home-hero-copy">
+              <div class="home-version">
+                <span class="version-dot-wrap"><span class="version-dot ping"></span><span class="version-dot"></span></span>
+                <span>Documentation Hub</span>
+              </div>
+              <div class="title-stack">
+                <span class="prism-glow">PRISM</span>
+                <span class="prism">PRISM</span>
+                <span class="line">Physical AI Robotics &amp;</span>
+                <span class="line italic">Intelligence System Manager</span>
+              </div>
+              <p>
+                Where Intelligence meets reality
+              </p>
             </div>
-          </article>
-          <article class="core-card">
-            <span class="eyebrow-small">Train</span>
-            <h3>Move from dataset to policy</h3>
-            <p>Train IL and VLA policies while monitoring logs, GPU state, and experiment progress.</p>
-            <div class="core-list">
-              <div class="core-item"><strong>Training</strong><span>Run ACT, Diffusion, pi0.5, SmolVLA, GR00T, and related policies.</span></div>
-              <div class="core-item"><strong>Augment</strong><span>Expand vision and language data for better generalization.</span></div>
-              <div class="core-item"><strong>Embedding</strong><span>Interpret experiments through latent-space analysis.</span></div>
-            </div>
-          </article>
-          <article class="core-card">
-            <span class="eyebrow-small">Deploy</span>
-            <h3>Validate on real hardware</h3>
-            <p>Load checkpoints, run them on robots, and push observed behavior back into the analysis loop.</p>
-            <div class="core-list">
-              <div class="core-item"><strong>Inference</strong><span>Load policies and run live inference on hardware.</span></div>
-              <div class="core-item"><strong>Visualize</strong><span>Debug failures through state, trajectory, and frame views.</span></div>
-              <div class="core-item"><strong>Task Orchestration</strong><span>Define and replay repeatable task sequences.</span></div>
-            </div>
-          </article>
-        </div>
-      </section>
+          </div>
 
-      <section class="section" id="surface">
-        <h2 class="section-title">Inside PRISM</h2>
-        <p class="section-copy">Real deployment work also needs dataset editing, analysis, perception, and robot alignment. `prism_ai_tools` keeps those surrounding jobs inside the same app instead of pushing them into separate tools.</p>
-        <div class="surface-grid">
-          <article class="surface-panel">
-            <h3>Data, Analysis, and Model Utilities</h3>
-            <div class="surface-list">
-              <div class="surface-item"><strong>Data Tools</strong><span>Edit datasets, merge episodes, run quality checks, and connect to Hugging Face.</span></div>
-              <div class="surface-item"><strong>Augment</strong><span>Expand training data through vision and language augmentation.</span></div>
-              <div class="surface-item"><strong>Visualize</strong><span>Inspect state, trajectories, and frames from Parquet and HDF5 sources.</span></div>
-              <div class="surface-item"><strong>Embedding</strong><span>Extract checkpoint embeddings and interpret them with t-SNE or UMAP.</span></div>
-            </div>
-          </article>
-          <article class="surface-panel">
-            <h3>Perception and Robotics Operations</h3>
-            <div class="surface-list">
-              <div class="surface-item"><strong>Detection</strong><span>Run Grounding DINO object detection and save the result set.</span></div>
-              <div class="surface-item"><strong>SAM2 / RT-SAM</strong><span>Create and track object masks offline or on live streams.</span></div>
-              <div class="surface-item"><strong>Kinematics</strong><span>Convert joint-based data into end-effector-space signals.</span></div>
-              <div class="surface-item"><strong>Camera Calibration</strong><span>Realign extrinsics and recover from calibration drift.</span></div>
-            </div>
-          </article>
-        </div>
-      </section>
+        </section>
 
-      <section class="section" id="guides">
-        <h2 class="section-title">Screens</h2>
-        <p class="section-copy">These are the screens exactly as they appear in the app menu. Expand them here to review what each screen does and how it is typically used.</p>
-        <input class="guide-search" id="guideSearch" type="search" placeholder="Search by screen name or task" />
-        <div class="guide-grid" id="guideGrid"></div>
-      </section>
+        <section class="home-section" id="directory">
+          <div class="home-section-head">
+            <div>
+              <h2>Screen Directory</h2>
+              <p>Use the cards below when you want a grouped view, but the primary navigation is the left sidebar. Each card goes directly to its own screen document.</p>
+            </div>
+          </div>
+          <div class="screen-groups" id="screenDirectory"></div>
+        </section>
+      </div>
     </main>
 
     <footer class="container footer">
-      <span>PRISM | Physical AI Robotics Intelligence System Manager</span>
+      <span>PRISM | Screen documentation hub</span>
       <a href="#overview">Top</a>
     </footer>
+
     <script src="./assets/js/page-data.js"></script>
     <script src="./assets/js/page-enrichment.js"></script>
     <script>
       const guideOrder = [
-        ['Pipeline', ['home', 'devices', 'record', 'training', 'inference']],
-        ['Tools', ['datatools', 'augment', 'visualize', 'sam2', 'rtsam', 'detection', 'tt', 'kinematics', 'calib', 'embedding', 'subgoal']]
+        ['Pipeline', ['home', 'devices', 'record', 'training', 'inference', 'steering']],
+        ['Tools', ['datatools', 'augment', 'visualize', 'sam2', 'rtsam', 'rain', 'detection', 'tt', 'kinematics', 'calib', 'foundationpose', 'embedding', 'subgoal']]
       ];
 
-      const guideGrid = document.getElementById('guideGrid');
-      const guideSearch = document.getElementById('guideSearch');
+      const sidebarNav = document.getElementById('sidebarNav');
+      const screenDirectory = document.getElementById('screenDirectory');
+      const screenSearch = document.getElementById('screenSearch');
 
-      function renderGuides(query = '') {
+      function getFilteredGroups(query = '') {
         const q = query.trim().toLowerCase();
-        const html = guideOrder.flatMap(([group, keys]) =>
-          keys
-            .map((key) => ({ key, group, doc: window.PAGE_DOCS[key] }))
-            .filter(({ doc }) => {
-              const haystack = [
-                doc.title,
-                doc.subtitle,
-                doc.purpose,
-                ...(doc.features || []),
-                ...(doc.userFlow || []),
-              ].join(' ').toLowerCase();
-              return !q || haystack.includes(q);
-            })
-            .map(({ key, group, doc }) => `
-              <details class="guide-entry">
-                <summary class="guide-summary">
-                  <div>
-                    <span class="guide-tag">${group}</span>
-                    <div class="guide-name">${doc.title}</div>
-                  </div>
-                  <div class="guide-brief">${doc.purpose}</div>
-                  <div class="guide-arrow">+</div>
-                </summary>
-                <div class="guide-body">
-                  <div class="guide-body-grid">
-                    <div class="guide-block">
-                      <h4>Flow</h4>
-                      <ul>${(doc.userFlow || []).map((item) => `<li>${item}</li>`).join('')}</ul>
-                    </div>
-                    <div class="guide-block">
-                      <h4>Capabilities</h4>
-                      <ul>${(doc.features || []).map((item) => `<li>${item}</li>`).join('')}</ul>
-                    </div>
-                    <div class="guide-block">
-                      <h4>Notes</h4>
-                      <ul>${(doc.userTips || doc.failureModes || []).map((item) => `<li>${item}</li>`).join('')}</ul>
-                    </div>
-                  </div>
-                  <a class="guide-link" href="./pages/${key}.html">Open full detail page</a>
-                </div>
-              </details>
-            `)
-        ).join('');
-
-        guideGrid.innerHTML = html;
+        return guideOrder
+          .map(([group, keys]) => {
+            const items = keys
+              .map((key) => ({ key, doc: window.PAGE_DOCS[key] }))
+              .filter(({ doc }) => {
+                const haystack = [
+                  doc.title,
+                  doc.subtitle,
+                  doc.purpose,
+                  ...(doc.features || []),
+                  ...(doc.userFlow || []),
+                ].join(' ').toLowerCase();
+                return !q || haystack.includes(q);
+              });
+            return [group, items];
+          })
+          .filter(([, items]) => items.length > 0);
       }
 
-      guideSearch.addEventListener('input', (event) => renderGuides(event.target.value));
-      renderGuides();
+      function renderSidebar(groups) {
+        sidebarNav.innerHTML = groups.map(([group, items]) => `
+          <section class="sidebar-section">
+            <span class="sidebar-label">${group}</span>
+            <div class="sidebar-list">
+              ${items.map(({ key, doc }) => `
+                <a class="sidebar-link" href="./pages/${key}.html">
+                  <div>
+                    <strong>${doc.title}</strong>
+                    <span>${doc.subtitle}</span>
+                  </div>
+                  <em>Open</em>
+                </a>
+              `).join('')}
+            </div>
+          </section>
+        `).join('');
+      }
+
+      function renderDirectory(groups) {
+        screenDirectory.innerHTML = groups.map(([group, items]) => `
+          <section class="screen-group">
+            <span class="screen-group-label">${group}</span>
+            <div class="screen-grid">
+              ${items.map(({ key, doc }) => `
+                <a class="screen-card" href="./pages/${key}.html">
+                  <strong>${doc.title}</strong>
+                  <span>${doc.subtitle}</span>
+                  <p>${doc.purpose}</p>
+                  <em>Open full screen guide</em>
+                </a>
+              `).join('')}
+            </div>
+          </section>
+        `).join('');
+      }
+
+      function renderAll(query = '') {
+        const groups = getFilteredGroups(query);
+        renderSidebar(groups);
+        renderDirectory(groups);
+      }
+
+      screenSearch.addEventListener('input', (event) => renderAll(event.target.value));
+      renderAll();
     </script>
   </body>
 </html>
