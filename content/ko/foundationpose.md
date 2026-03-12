@@ -29,6 +29,4 @@ layout:
 
 4. [area:포즈 결과] 에서 Position(XYZ 위치), Quaternion(회전), Transform Matrix(4x4 변환 행렬)를 확인합니다. Raw Response에서 전체 JSON 응답도 볼 수 있고, Latency로 추정 속도를 확인합니다.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/foundationpose/screenshot.png)
--->
+![foundationpose 화면](../assets/foundationpose/screenshot.png)

@@ -21,6 +21,4 @@ layout:
 
 4. 모든 정리가 끝나면 Training 화면으로 넘어갑니다. 데이터가 깨끗할수록 학습 결과가 좋습니다.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/datatools/screenshot.png)
--->
+![datatools 화면](../assets/datatools/screenshot.png)

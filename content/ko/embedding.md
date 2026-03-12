@@ -27,6 +27,4 @@ layout:
 
 5. 산점도에서 [btn:Zoom In], [btn:Zoom Out], [btn:Reset View] 로 세부 영역을 확인합니다. 점 위에 마우스를 올리면 해당 데이터의 상세 정보가 나옵니다.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/embedding/screenshot.png)
--->
+![embedding 화면](../assets/embedding/screenshot.png)

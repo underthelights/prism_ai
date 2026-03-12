@@ -23,6 +23,4 @@ layout:
 
 4. 변환이 끝나면 [area:변환 결과] 에 컬럼 목록과 샘플 데이터가 표시됩니다. [btn:Open 3D EEF Trajectory in Visualize] 를 눌러 결과를 바로 3D로 확인하세요. 궤적이 자연스럽게 이어지면 성공, 끊기거나 튀는 곳이 있으면 프레임 이름이나 데이터를 다시 확인합니다.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/kinematics/screenshot.png)
--->
+![kinematics 화면](../assets/kinematics/screenshot.png)

@@ -21,6 +21,4 @@ layout:
 
 3. 모든 것이 정상이면 다음 단계로 넘어갑니다. 문제가 있다면 여기서 멈추고 Home에서 로봇 타입을 다시 확인하거나, 관리자에게 설정 점검을 요청하세요.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/devices/screenshot.png)
--->
+![devices 화면](../assets/devices/screenshot.png)

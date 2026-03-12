@@ -23,6 +23,4 @@ layout:
 
 4. 이전에 중단했던 학습을 이어서 하고 싶다면: 상단에서 [btn:Resume] 모드로 전환하고, [btn:Browse] 또는 [btn:Edit] 로 기존 출력 폴더를 선택한 뒤 [btn:Load] → [btn:Resume Training] 순서로 진행합니다.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/training/screenshot.png)
--->
+![training 화면](../assets/training/screenshot.png)

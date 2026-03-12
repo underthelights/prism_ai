@@ -23,6 +23,4 @@ layout:
 
 4. 한 프레임에서 결과가 좋으면, [btn:Save to meta/detections/] 로 저장하거나, [btn:Batch Process All Frames] 로 모든 프레임에 한번에 적용합니다.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/detection/screenshot.png)
--->
+![detection 화면](../assets/detection/screenshot.png)

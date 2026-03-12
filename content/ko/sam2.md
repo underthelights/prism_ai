@@ -29,6 +29,4 @@ layout:
 
 5. 결과가 좋으면 [btn:Save] (현재 카메라만) 또는 [btn:Save All] (모든 카메라)로 저장합니다.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/sam2/screenshot.png)
--->
+![sam2 화면](../assets/sam2/screenshot.png)

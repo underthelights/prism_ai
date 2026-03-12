@@ -29,6 +29,4 @@ layout:
 
 5. 수정이 끝나면 [btn:Save Subtasks] 를 눌러 저장합니다. 저장 경로가 화면에 표시됩니다.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/tt/screenshot.png)
--->
+![tt 화면](../assets/tt/screenshot.png)

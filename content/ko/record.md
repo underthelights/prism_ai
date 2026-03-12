@@ -23,6 +23,4 @@ layout:
 
 4. 녹화를 모두 마치면 "다음에 뭘 할까요?" 안내 모달이 뜹니다. [btn:Data Tools · Quality Check] 로 데이터 품질 확인, [btn:Visualize] 로 궤적 확인, [btn:Kinematics] 로 좌표 변환, [btn:SAM2] 로 마스크 생성 중 필요한 것을 선택하세요.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/record/screenshot.png)
--->
+![record 화면](../assets/record/screenshot.png)

@@ -29,6 +29,4 @@ layout:
 
 6. 증강이 끝나면 Visualize나 Data Tools에서 결과를 다시 확인하세요. 변형 데이터가 원본과 너무 다르면 빼는 것이 나을 수도 있습니다.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/augment/screenshot.png)
--->
+![augment 화면](../assets/augment/screenshot.png)

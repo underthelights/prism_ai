@@ -25,6 +25,4 @@ layout:
 
 4. 이상한 움직임이 보이면 즉시 [btn:Stop] (또는 `Space` 키)을 누르세요. 다른 컨트롤: [btn:Retry] (`←`) 다시 시도, [btn:Next] (`→`) 다음 에피소드, [btn:Go to Initial] (`Ctrl+Shift+H`) 초기 자세 복귀, [btn:Finish] (`Ctrl+Shift+X`) 전체 종료.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/inference/screenshot.png)
--->
+![inference 화면](../assets/inference/screenshot.png)

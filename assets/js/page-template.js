@@ -61,10 +61,17 @@
       const raw = await res.text();
       const { meta, body } = parseFrontmatter(raw);
       const steps = [];
+      const images = [];
       const bodyClean = body.replace(/<!--[\s\S]*?-->/g, '').trim();
       const lines = bodyClean.split('\n');
       let currentStep = '';
       for (const line of lines) {
+        /* capture markdown images */
+        const imgMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)/);
+        if (imgMatch) {
+          images.push({ alt: imgMatch[1], src: imgMatch[2] });
+          continue;
+        }
         const stepMatch = line.match(/^\d+\.\s+(.+)/);
         if (stepMatch) {
           if (currentStep) steps.push(currentStep.trim());
@@ -82,6 +89,7 @@
         caution: meta.caution || '',
         layoutMap: Array.isArray(meta.layout) ? meta.layout : [],
         steps: steps,
+        images: images,
       };
     } catch (e) {
       return null;
@@ -293,6 +301,16 @@
               </li>
             `).join('')}
           </ol>
+          ${(quickGuide.images || []).length ? `
+            <div class="guide-screenshot">
+              ${quickGuide.images.map((img) => `
+                <figure>
+                  <img src="../content/${img.src.replace(/^\.\.\//,'')}" alt="${escapeHtml(img.alt)}" loading="lazy" style="width:100%;border-radius:12px;border:1px solid rgba(168,85,247,0.18);margin-top:1rem;" />
+                  ${img.alt ? `<figcaption style="text-align:center;opacity:0.6;font-size:0.85rem;margin-top:0.4rem;">${escapeHtml(img.alt)}</figcaption>` : ''}
+                </figure>
+              `).join('')}
+            </div>
+          ` : ''}
           <div class="doc-callout warn">
             <h3>실수하기 쉬운 점</h3>
             <p>${renderGuideMarkup(quickGuide.caution)}</p>

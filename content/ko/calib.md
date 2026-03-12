@@ -27,6 +27,4 @@ layout:
 
 5. 결과가 나오면 [btn:Copy] 또는 [btn:Copy Checklist] 로 보정값을 복사해서 YAML 설정에 반영하고, 카메라를 재시작합니다.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/calib/screenshot.png)
--->
+![calib 화면](../assets/calib/screenshot.png)

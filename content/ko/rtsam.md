@@ -27,6 +27,4 @@ layout:
 
 4. 추적 중에 마스크가 흔들리면 [btn:Stop] 으로 멈추고 물체를 다시 클릭해서 잠금을 갱신합니다. Poll Interval과 Mask Opacity 슬라이더로 추적 속도와 표시를 조정할 수 있습니다.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/rtsam/screenshot.png)
--->
+![rtsam 화면](../assets/rtsam/screenshot.png)

@@ -37,7 +37,22 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:9999/)",
       "Bash(npm list:*)",
       "Bash(npm install:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(curl -s http://localhost:9999/)",
+      "Bash(curl -s http://localhost:9999/pages/home.html)",
+      "Bash(git push:*)",
+      "Bash(node capture_screenshots.js)",
+      "Bash(git remote:*)",
+      "Read(//home/user/LG-AI-PA/prism_ai/**)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:9999/content/assets/calib/screenshot.png)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:9999/assets/css/page.css)",
+      "Bash(node /home/user/LG-AI-PA/prism_ai/capture_screenshots.js)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" --connect-timeout 5 http://10.4.54.193:3000/)",
+      "Bash(node -e \":*)",
+      "Bash(node /tmp/inspect_prism.js)",
+      "Bash(node inspect_prism.js)",
+      "Bash(git status:*)"
     ],
     "additionalDirectories": [
       "/home/user/LG-AI-PA/physical_ai_tools/physical_ai_manager/public",

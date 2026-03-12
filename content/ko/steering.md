@@ -25,6 +25,4 @@ layout:
 
 4. 교정이 끝나면 [btn:Return To Policy] 로 다시 AI 자율 실행에 넘겨주거나, 상황이 안 좋으면 그대로 사람이 계속 제어해도 됩니다. 런타임 정보에서 현재 Task, Episode, 최근 이벤트를 확인할 수 있습니다.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/steering/screenshot.png)
--->
+![steering 화면](../assets/steering/screenshot.png)

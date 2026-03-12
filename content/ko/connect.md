@@ -12,6 +12,4 @@ caution: "설정 파일(YAML)만 만들면 끝이 아닙니다. 로봇마다 3D 
 
 3. PRISM을 재시작하고 Home에서 새 로봇 카드가 보이는지 확인합니다. 카드가 보이면 선택 후 Devices 화면으로 이동해서 카메라 영상이 나오는지, 관절 상태가 맞는지, 3D 모델이 실제 로봇과 같은지 하나씩 점검하세요.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/connect/screenshot.png)
--->
+![connect 화면](../assets/connect/screenshot.png)

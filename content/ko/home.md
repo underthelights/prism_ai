@@ -23,6 +23,4 @@ layout:
 
 3. [btn:Launch PRISM] 을 누르면 Devices 화면으로 넘어갑니다. 만약 특정 작업으로 바로 가고 싶다면, 아래쪽 워크플로우 카드 [btn:Record], [btn:Augment], [btn:Train], [btn:Inference] 중 하나를 눌러도 됩니다.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/home/screenshot.png)
--->
+![home 화면](../assets/home/screenshot.png)

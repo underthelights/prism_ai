@@ -28,6 +28,4 @@ layout:
 
 3. 이상한 값이 보이면 에피소드 번호와 프레임 번호를 기억해 두세요. 그 다음 Data Tools에서 해당 에피소드를 삭제하거나, Kinematics에서 좌표를 재확인하거나, Subtask에서 구간을 나눌 수 있습니다.
 
-<!-- 스크린샷을 추가하려면 아래처럼 작성하세요:
-![화면 설명](../assets/visualize/screenshot.png)
--->
+![visualize 화면](../assets/visualize/screenshot.png)
