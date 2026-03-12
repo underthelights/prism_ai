@@ -1,0 +1,48 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//home/user/LG-AI-PA/physical_ai_tools/**)",
+      "Bash(node -c assets/js/page-template.js)",
+      "Bash(node -c assets/js/page-data.js)",
+      "Bash(for f:*)",
+      "Bash(do sed:*)",
+      "Bash(sed -i 's|<link rel=\"\"stylesheet\"\"|<link rel=\"\"icon\"\" href=\"\"../favicon.ico\"\" type=\"\"image/x-icon\"\" />\\\\n    <link rel=\"\"stylesheet\"\"|' \"$f\")",
+      "Bash(done)",
+      "WebFetch(domain:cdn.jsdelivr.net)",
+      "Bash(curl -sL \"https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js\" -o /home/user/LG-AI-PA/prism_ai/assets/vendor/marked.min.js)",
+      "Bash(cat /home/user/LG-AI-PA/prism_ai/content/ko/*.md)",
+      "Bash(/tmp/final_extract.txt:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/connect.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/devices.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/record.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/training.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/inference.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/steering.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/datatools.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/augment.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/visualize.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/kinematics.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/sam2.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/detection.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/tt.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/subgoal.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/embedding.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/rtsam.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/rain.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/foundationpose.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/calib.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/pri4r.md:*)",
+      "Bash(/home/user/LG-AI-PA/prism_ai/content/ko/home.md:*)",
+      "Bash(pip3 list:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:9999/)",
+      "Bash(npm list:*)",
+      "Bash(npm install:*)",
+      "Bash(git add:*)"
+    ],
+    "additionalDirectories": [
+      "/home/user/LG-AI-PA/physical_ai_tools/physical_ai_manager/public",
+      "/home/user/LG-AI-PA/prism_ai/pages",
+      "/tmp"
+    ]
+  }
+}

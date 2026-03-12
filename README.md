@@ -22,7 +22,7 @@ The requested A2Z font is included as a local static asset.
 
 ```bash
 cd /Users/kyuhwan.shim/Documents/prism_ai
-python3 -m http.server 8080
+python3 -m http.server 9999
 # http://localhost:8080
 ```
 

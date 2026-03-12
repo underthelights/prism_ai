@@ -108,6 +108,167 @@ window.PAGE_DOCS = {
       </div>
     `
   },
+  connect: {
+    title: 'New Robot Setup',
+    subtitle: 'How to connect and validate a new robot platform',
+    purpose: 'Use this page when you need to onboard a new robot company or platform into PRISM. The practical path is usually not to bind PRISM directly to a vendor SDK, but to add a ROS adapter node that matches PRISM’s existing topic and config contract.',
+    accessRule: 'Open before Devices when you are onboarding a robot that PRISM has not used yet.',
+    bestFor: 'Adapter-based robot onboarding, robot_type YAML setup, first-time platform verification',
+    runtimeMode: 'Setup and validation guide',
+    audience: ['Robot integration engineer', 'Deployment owner', 'Operator preparing a new platform'],
+    prerequisites: [
+      'You need either an existing ROS 2 interface for the new robot or a vendor SDK that you can wrap with an adapter node.',
+      'You should know the robot family name, base frame, target frame, camera topology, and the joint names you want PRISM to use.',
+      'You need permission to add a new robot_type YAML and, if necessary, extend the hard-coded URDF or UI maps in the frontend and backend.'
+    ],
+    features: [
+      'Explains that the real entry point is the robot_type YAML, not a hidden database or UI-only registry.',
+      'Summarizes the ROS message contract PRISM already expects for camera, follower state, and leader command topics.',
+      'Shows a minimum YAML example that is usually enough to get Home, Devices, Record, Training, and Inference onto the new platform.',
+      'Lists the places where new robots still require code changes such as URDF maps, FK search paths, fallback joint orders, and camera control.'
+    ],
+    services: ['getRobotTypeList', 'setRobotType', '/camera/get_config'],
+    topics: ['/task/status', 'camera topics as sensor_msgs/CompressedImage', 'follower topics as JointState or Odometry', 'leader topics as JointTrajectory or Twist'],
+    inputs: ['robot_type YAML', 'ROS adapter topic contract', 'URDF and frame configuration', 'Camera topic mapping'],
+    outputs: ['A new robot that becomes selectable on Home', 'A platform that passes Devices pre-flight checks', 'A repeatable adapter and YAML pattern for later robots'],
+    relatedPages: ['Home is where the new robot becomes selectable', 'Devices is where URDF and camera layout are verified', 'Kinematics may need robot-specific default frame updates', 'Record and Inference should wait until both setup and validation are complete'],
+    artifacts: [
+      'One new config/<robot_type>.yaml file',
+      'Adapter node or bridge process that publishes PRISM-compatible ROS 2 topics',
+      'Optional URDF, FK, joint-order, and camera-control code extensions for the new platform'
+    ],
+    ioHtml: `
+      <h3>핵심 결론</h3>
+      <ul>
+        <li>지금 구조에서 가장 빠른 연결 방법은 <code>vendor SDK -&gt; ROS adapter node -&gt; PRISM topic contract</code> 경로다.</li>
+        <li><code>config/*.yaml</code>에 새 <code>robot_type</code>를 추가하면 Home selector 목록에는 자동으로 잡힌다. 근거는 <code>physical_ai_server.py:824</code>의 YAML 스캔 로직이다.</li>
+        <li>다만 URDF, FK, 3D viewer, fallback joint order, camera start/stop, Go to Initial 같은 부분은 새 로봇일 때 코드 추가가 더 필요할 수 있다.</li>
+      </ul>
+      <h3>최소 robot_type YAML 예시</h3>
+      <pre class="doc-codeblock"><code>physical_ai_server:
+  ros__parameters:
+    acme_a1:
+      base_frame: base_link
+      observation_list: [cam_front, state]
+      camera_topic_list:
+        - cam_front:/acme/camera/front/image_raw/compressed
+      rosbag_extra_topic_list:
+        - /acme/camera/front/camera_info
+        - /tf
+        - /tf_static
+      joint_topic_list:
+        - follower:/acme/joint_states
+        - leader:/acme/command/joint_trajectory
+      joint_list:
+        - leader
+      joint_order:
+        leader: [joint1, joint2, joint3, joint4, gripper_joint]
+      initial_pose:
+        leader: [0.0, 0.0, 0.0, 0.0, 0.0]</code></pre>
+      <h3>현재 사실상 지원하는 I/O 타입</h3>
+      <ul>
+        <li>카메라: <code>sensor_msgs/CompressedImage</code> 근거 <code>communication/communicator.py:273</code></li>
+        <li>Follower 상태: <code>sensor_msgs/JointState</code> 또는 <code>nav_msgs/Odometry</code> 근거 <code>communication/communicator.py:311</code></li>
+        <li>Leader 명령: <code>trajectory_msgs/JointTrajectory</code> 또는 <code>geometry_msgs/Twist</code> 근거 <code>communication/communicator.py:322</code>, <code>data_processing/data_converter.py:59</code></li>
+      </ul>
+      <div class="doc-callout warn">
+        <h3>중요한 naming rule</h3>
+        <p><code>joint_topic_list</code>의 key 이름에 <code>follower</code> 또는 <code>leader</code>가 들어가야 하며, 모바일 베이스면 <code>mobile</code>도 포함되어야 한다. 이 문자열로 메시지 타입을 결정한다. 근거는 <code>communication/communicator.py:314</code>와 <code>communication/communicator.py:322</code>다.</p>
+      </div>
+    `,
+    tech: {
+      yamlRegistry: 'physical_ai_server/physical_ai_server/physical_ai_server.py:824 scans config/*.yaml into robot_type list',
+      parameterInit: 'physical_ai_server/physical_ai_server/physical_ai_server.py:323 loads camera_topic_list, joint_topic_list, base_frame, joint_order, camera_config',
+      namingConstraint: 'communication/communicator.py:314 and :322 infer JointState/Odometry and JointTrajectory/Twist from topic key names',
+      jointAlignment: 'physical_ai_server.py:381 builds total_joint_order; data_processing/data_manager.py:788 consumes follower data against that order'
+    },
+    userFlow: [
+      'Start by defining one new robot_type YAML and make sure Home can see it in the selector.',
+      'Build or reuse a ROS adapter so the new robot emits the camera, follower, and leader topics in the message types PRISM already understands.',
+      'Match joint names and joint order exactly, or rename them in the adapter layer before PRISM sees them.',
+      'Open Home and Devices to smoke-test selector visibility, camera layout, joint state updates, and URDF rendering before any operator uses runtime pages.',
+      'If Devices passes but FK, visualization, or Go to Initial still fail, patch the hard-coded robot maps listed below.'
+    ],
+    expectedResult: ['The new robot can be selected on Home, validated on Devices, and reused by Record, Training, and Inference without writing a robot-specific fork of the full PRISM pipeline.'],
+    userTips: [
+      'The fastest safe path is usually an adapter node, not a direct integration of every vendor SDK detail into PRISM itself.',
+      'If follower joint names differ from leader joint_order names, fix the rename in the adapter. Do not wait for downstream pages to compensate for it.',
+      'If camera topics are already alive, data collection can work even when the current camera start or enumerate helpers are still vendor-specific.'
+    ],
+    guideHtml: `
+      <div class="doc-block">
+        <h3>Quick decision rule</h3>
+        <p>From the current codebase, PRISM is not completely tied to ROBOTIS-specific hardware. The core runtime is closer to a ROS 2 topic contract plus <code>robot_type</code>-specific YAML. If a new company robot can expose the same contract, the main Record, Train, and Inference flow is largely reusable.</p>
+      </div>
+      <div class="doc-block">
+        <h3>What is actually the entry point?</h3>
+        <div class="mini-grid">
+          <article class="mini-card">
+            <h4>robot_type YAML</h4>
+            <p>New robot discovery starts from <code>config/*.yaml</code>. The backend scans those files into the selector list in <code>physical_ai_server.py:824</code>.</p>
+          </article>
+          <article class="mini-card">
+            <h4>ROS parameter init</h4>
+            <p>The backend loads <code>camera_topic_list</code>, <code>joint_topic_list</code>, <code>joint_order</code>, <code>base_frame</code>, and <code>camera_config</code> in <code>physical_ai_server.py:323</code>.</p>
+          </article>
+          <article class="mini-card">
+            <h4>Topic contract</h4>
+            <p>The runtime expects <code>CompressedImage</code>, <code>JointState</code>/<code>Odometry</code>, and <code>JointTrajectory</code>/<code>Twist</code>, not arbitrary custom message types.</p>
+          </article>
+          <article class="mini-card">
+            <h4>Adapter-first strategy</h4>
+            <p>If the new robot is proprietary, the clean path is to adapt its SDK into those ROS 2 types first instead of teaching every PRISM page a new vendor API.</p>
+          </article>
+        </div>
+      </div>
+      <div class="doc-block">
+        <h3>Minimum onboarding workflow</h3>
+        <ol class="step-list">
+          <li>
+            <span class="step-title">Add the new YAML first</span>
+            <span class="step-detail">Create one new <code>config/&lt;robot_type&gt;.yaml</code> file with camera topics, joint topics, joint_order, base_frame, and initial_pose. If Home cannot list the robot, nothing else matters yet.</span>
+          </li>
+          <li>
+            <span class="step-title">Adapt the vendor I/O to PRISM’s contract</span>
+            <span class="step-detail">Publish camera as <code>CompressedImage</code>, follower state as <code>JointState</code> or <code>Odometry</code>, and leader command as <code>JointTrajectory</code> or <code>Twist</code>.</span>
+          </li>
+          <li>
+            <span class="step-title">Normalize joint naming before PRISM sees it</span>
+            <span class="step-detail">The follower names must align with <code>joint_order</code>. The backend builds one merged order in <code>physical_ai_server.py:381</code>, and dataset conversion later consumes messages against that order in <code>data_processing/data_manager.py:788</code>.</span>
+          </li>
+          <li>
+            <span class="step-title">Smoke-test on Home and Devices</span>
+            <span class="step-detail">Verify selector visibility on Home, then open Devices and compare the URDF, camera cards, and joint state updates against the real hardware.</span>
+          </li>
+          <li>
+            <span class="step-title">Patch the remaining hard-coded spots only if needed</span>
+            <span class="step-detail">If visualization, FK, default frames, or Go to Initial still fail, extend the specific hard-coded maps listed below instead of overcomplicating the YAML.</span>
+          </li>
+        </ol>
+      </div>
+      <div class="doc-block">
+        <h3>Where code changes are still required</h3>
+        <ul>
+          <li><code>kinematics/fk_solver.py:120</code>: known URDF search paths for FK</li>
+          <li><code>components/URDFViewer.js:58</code> and <code>components/TaskTrajectoryURDFViewer.js:8</code>: frontend URDF path maps</li>
+          <li><code>utils/robotJointState.js:1</code> and <code>pages/VisualizePage.js:233</code>: fallback joint-order maps</li>
+          <li><code>pages/DevicesPage.js:28</code>: device metadata shown in the UI</li>
+          <li><code>pages/KinematicsPage.js:77</code>: robot-specific default frames</li>
+          <li><code>utils/camera_manager.py:35</code>: RealSense and container-specific camera enumerate/start/stop logic</li>
+          <li><code>physical_ai_server.py:694</code>: <code>Go to Initial</code> currently sends to <code>/arm_controller/follow_joint_trajectory</code></li>
+        </ul>
+      </div>
+      <div class="doc-callout warn">
+        <h3>What is really vendor-specific today?</h3>
+        <ul>
+          <li>URDF and FK lookup paths</li>
+          <li>3D viewer metadata and fallback joint-order maps</li>
+          <li>Camera control helpers, which currently assume the open_manipulator container and RealSense inventory</li>
+          <li>The hard-coded <code>Go to Initial</code> action path for joint trajectory control</li>
+        </ul>
+      </div>
+    `
+  },
   devices: {
     title: 'Devices',
     subtitle: 'Robot and camera pre-flight inspection',
@@ -399,9 +560,69 @@ window.PAGE_DOCS = {
     services: ['/training/command', '/training/get_dataset_list', '/training/get_model_weight_list', '/training/get_training_info', '/system/gpu_status'],
     topics: ['/training/status', '/system/gpu_status'],
     inputs: ['Policy family', 'Dataset path', 'Output directory', 'Hyperparameters and mode'],
-    outputs: ['Training checkpoints', 'Progress metrics', 'Experiment history and status records'],
+    outputs: ['Training checkpoints', 'Progress metrics', 'Experiment history and status records', 'logs/training_summary.json and related config files'],
     relatedPages: ['Record or Data Tools prepare the dataset used here', 'Embedding helps compare checkpoints produced here', 'Inference consumes the exported checkpoints'],
-    artifacts: ['Training output directory', 'Checkpoint files', 'Experiment history entries'],
+    artifacts: [
+      'Selected output folder under /root/ros2_ws/src/physical_ai_tools/lerobot/outputs/train/',
+      'train_config.json plus logs/training_config.json',
+      'logs/training_metrics.csv, checkpoints.csv, evaluation_log.csv, training_summary.json'
+    ],
+    ioHtml: `
+      <h3>학습 결과가 실제로 저장되는 위치</h3>
+      <p><code>Output folder name</code>에 입력한 값이 학습 run 폴더 이름이 됩니다.</p>
+      <pre class="doc-codeblock"><code>/root/ros2_ws/src/physical_ai_tools/lerobot/outputs/train/&lt;output_folder&gt;/
+  train_config.json
+  logs/
+    training_config.json
+    training_metrics.csv
+    checkpoints.csv
+    evaluation_log.csv
+    training_summary.json</code></pre>
+      <h3>자주 확인하는 파일</h3>
+      <ul>
+        <li><code>train_config.json</code>: Resume와 설정 복원 시 기준이 되는 원본 config</li>
+        <li><code>logs/training_config.json</code>: UI history에서 보기 좋은 요약형 config</li>
+        <li><code>logs/training_summary.json</code>: best loss, final loss, total steps, status를 담는 최종 요약</li>
+      </ul>
+      <h3>핵심 schema 예시</h3>
+      <h4><code>train_config.json</code></h4>
+      <pre class="doc-codeblock"><code>{
+  "dataset": {
+    "repo_id": "lg_ai_pa/pick_red_cup"
+  },
+  "policy": {
+    "type": "act",
+    "device": "cuda"
+  },
+  "output_dir": "/root/ros2_ws/src/physical_ai_tools/lerobot/outputs/train/pick_red_cup_act_001",
+  "seed": 1000,
+  "num_workers": 4,
+  "batch_size": 8,
+  "steps": 100000,
+  "eval_freq": 20000,
+  "log_freq": 200,
+  "save_freq": 1000
+}</code></pre>
+      <h4><code>logs/training_summary.json</code></h4>
+      <pre class="doc-codeblock"><code>{
+  "policy_type": "act",
+  "dataset": "lg_ai_pa/pick_red_cup",
+  "start_time": "2026-03-12T10:15:03.123456",
+  "end_time": "2026-03-12T12:02:44.456789",
+  "duration_seconds": 6461.33,
+  "total_steps": 100000,
+  "best_loss": 0.0214,
+  "best_step": 84200,
+  "final_loss": 0.0241,
+  "avg_loss": 0.0837,
+  "status": "completed",
+  "error": null
+}</code></pre>
+      <div class="doc-callout info">
+        <h3>Inference로 넘길 때 주의</h3>
+        <p>Inference 페이지에 넣는 경로는 run 루트 전체가 아니라 <code>config.json</code>, <code>policy_preprocessor.json</code>, <code>policy_postprocessor.json</code>가 들어 있는 실제 policy 디렉토리여야 합니다.</p>
+      </div>
+    `,
     tech: {
       component: 'physical_ai_manager/src/pages/TrainingPage.js',
       statusTopic: '/training/status',
@@ -518,7 +739,7 @@ window.PAGE_DOCS = {
     topics: ['/task/status', '/inference/loading_status', '/joint_states'],
     inputs: ['Policy path and inference controls', 'Task context', 'Start and stop commands'],
     outputs: ['Live robot runtime state', 'Loading progress', 'Operator-visible execution traces'],
-    relatedPages: ['Training produces the checkpoints used here', 'Human Override complements this page during live operation'],
+    relatedPages: ['Training produces the checkpoints used here', 'Steering complements this page during live operation'],
     tech: {
       component: 'physical_ai_manager/src/pages/InferencePage.js',
       uiLayout: 'camera grid + right-side runtime panel',
@@ -721,8 +942,34 @@ window.PAGE_DOCS = {
     services: ['/dataset/augment', '/dataset/get_sample_image', '/image/get_available_list', '/dataset/update_task_instructions', '/dataset/generate_instruction_variants', '/browse_file'],
     topics: ['/augmentation/status'],
     inputs: ['Dataset path', 'Augmentation configuration', 'Language prompts or instructions'],
-    outputs: ['Augmented dataset or updated instruction set'],
+    outputs: ['Augmented dataset or updated instruction set', 'meta/tasks.parquet or meta/tasks.jsonl when language mode writes tasks back'],
     relatedPages: ['Training is the main downstream consumer', 'Visualize and Data Tools help inspect the result'],
+    artifacts: [
+      'Vision mode output folder chosen by the operator',
+      'Language mode task files under dataset meta/',
+      'Updated task instruction list persisted back into the dataset'
+    ],
+    ioHtml: `
+      <h3>Language 모드에서 실제로 바뀌는 파일</h3>
+      <pre class="doc-codeblock"><code>&lt;dataset_path&gt;/meta/tasks.parquet
+&lt;dataset_path&gt;/meta/tasks.jsonl</code></pre>
+      <p>기본은 <code>tasks.parquet</code>이고, 구버전 호환 파일이 이미 있으면 <code>tasks.jsonl</code>도 함께 갱신됩니다.</p>
+      <h3>task schema 예시</h3>
+      <pre class="doc-codeblock"><code>[
+  {
+    "task_index": 0,
+    "task": "pick up the red cup"
+  },
+  {
+    "task_index": 1,
+    "task": "place the cup on the tray"
+  }
+]</code></pre>
+      <ul>
+        <li>저장 시 <code>task_index</code>는 연속 번호로 다시 정렬됩니다.</li>
+        <li>Language 모드는 dataset 안의 supervision text를 바꾸는 작업이므로, 적용 전에 반드시 variant를 검수해야 합니다.</li>
+      </ul>
+    `,
     tech: {
       component: 'physical_ai_manager/src/pages/DataAugmentationPage.js',
       modes: 'vision | language',
@@ -826,7 +1073,7 @@ window.PAGE_DOCS = {
     topics: ['Service-driven page; no primary long-lived topic is required for basic use'],
     inputs: ['Dataset path', 'Episode index', 'Selected columns or axes', 'Frame navigation'],
     outputs: ['Tables, graphs, trajectory plots, snapshots, and dataset diagnostics'],
-    relatedPages: ['Kinematics enriches the dataset for better EEF analysis', 'Task Orchestration and Data Tools consume similar dataset context'],
+    relatedPages: ['Kinematics enriches the dataset for better EEF analysis', 'Subtask and Data Tools consume similar dataset context'],
     tech: {
       component: 'physical_ai_manager/src/pages/VisualizePage.js',
       views: 'graph, table, HDF5, EEF 3D, frame snapshot workflows',
@@ -920,8 +1167,60 @@ window.PAGE_DOCS = {
     services: ['/browse_file', '/dataset/get_info', '/dataset/get_sample_image', '/sam2/predict', '/sam2/track', '/sam2/save_masks', '/sam2/get_mask'],
     topics: ['/annotation/sam2_tracking_status'],
     inputs: ['Dataset path', 'Episode', 'Camera', 'Point or box prompts', 'Tracking options'],
-    outputs: ['Predicted masks', 'Tracked masks', 'Saved annotation files'],
+    outputs: ['Predicted masks', 'Tracked masks', 'Saved annotation files under meta/sam2_masks/'],
     relatedPages: ['Detection may provide prompts or object context', 'Data Tools can review mask timeline QA after saving'],
+    artifacts: [
+      'meta/sam2_masks/episode_0000/<camera>/object_map.json',
+      'meta/sam2_masks/episode_0000/<camera>/bboxes.json',
+      'masks.npz or frame_000123.png series plus per-object folders'
+    ],
+    ioHtml: `
+      <h3>저장 위치와 폴더 구조</h3>
+      <pre class="doc-codeblock"><code>&lt;dataset_path&gt;/meta/sam2_masks/episode_0000/&lt;camera&gt;/
+  object_map.json
+  bboxes.json
+  masks.npz
+  objects/
+    object_0001_cup/
+      masks.npz
+      bboxes.json</code></pre>
+      <p>PNG 저장 모드를 선택하면 <code>masks.npz</code> 대신 <code>frame_000123.png</code> 묶음이 생성됩니다.</p>
+      <h3>대표 schema</h3>
+      <h4><code>object_map.json</code></h4>
+      <pre class="doc-codeblock"><code>{
+  "objects": {
+    "1": {
+      "object_id": 1,
+      "object_name": "cup",
+      "folder": "object_0001_cup"
+    }
+  }
+}</code></pre>
+      <h4><code>bboxes.json</code></h4>
+      <pre class="doc-codeblock"><code>{
+  "format": "xyxy",
+  "normalized": true,
+  "image_width": 640,
+  "image_height": 480,
+  "object_name_map": {
+    "1": "cup"
+  },
+  "frames": {
+    "frame_000042": {
+      "1": {
+        "x1": 76,
+        "y1": 86,
+        "x2": 217,
+        "y2": 268,
+        "x1_norm": 0.119,
+        "y1_norm": 0.180,
+        "x2_norm": 0.340,
+        "y2_norm": 0.560
+      }
+    }
+  }
+}</code></pre>
+    `,
     tech: {
       component: 'physical_ai_manager/src/pages/SAM2Page.js',
       serviceHook: 'sam2Predict, sam2Track, sam2SaveMasks, sam2GetMask',
@@ -977,9 +1276,9 @@ window.PAGE_DOCS = {
     `
   },
   rtsam: {
-    title: 'Realtime SAM2',
+    title: 'RT-SAM',
     subtitle: 'Live topic segmentation and tracking',
-    purpose: 'Use Realtime SAM2 when you need prompt-based object tracking directly on a live camera topic. The page focuses on interactive prompt creation, mask locking, online tracking, and tracker stabilization settings.',
+    purpose: 'Use RT-SAM when you need prompt-based object tracking directly on a live camera topic. The page focuses on interactive prompt creation, mask locking, online tracking, and tracker stabilization settings.',
     accessRule: 'Use on live camera topics, not recorded datasets.',
     bestFor: 'Live object locking and interactive tracking',
     runtimeMode: 'Real-time perception',
@@ -999,7 +1298,7 @@ window.PAGE_DOCS = {
     topics: ['/annotation/realtime_sam_status'],
     inputs: ['Live topic selection', 'Prompt points or boxes', 'Tracking controls'],
     outputs: ['Live tracked masks', 'Tracking status counters', 'Prompt and lock state'],
-    relatedPages: ['RAIN extends this workflow with action-sequence authoring', 'FoundationPose can reuse prompt-style scene setup'],
+    relatedPages: ['RAIN extends this workflow with action-sequence authoring', 'GraspPose can reuse prompt-style scene setup'],
     tech: {
       component: 'physical_ai_manager/src/pages/RealtimeSAMInferencePage.js',
       stream: 'web_video_server style MJPEG stream + topic refresh',
@@ -1085,9 +1384,52 @@ window.PAGE_DOCS = {
     services: ['/dataset/get_info', '/browse_file', '/dataset/get_sample_image', '/dataset/get_parquet_data', '/annotation/detect_objects', '/annotation/save_detections', '/annotation/batch_detect_objects', '/sam2/predict'],
     topics: ['/annotation/batch_detection_status'],
     inputs: ['Dataset path', 'Episode and frame', 'Object prompt', 'Thresholds'],
-    outputs: ['Per-camera detections', 'Optional masks', 'Saved metadata under the dataset'],
+    outputs: ['Per-camera detections', 'Optional masks', 'Saved metadata under meta/detections/'],
     relatedPages: ['SAM2 can refine object masks after detection', 'Data Tools can review the saved dataset later'],
-    artifacts: ['Detection metadata stored under dataset meta directories'],
+    artifacts: [
+      'meta/detections/episode_0000/frame_0000/<camera>/detections.json',
+      'visualization.png, annotated_image.png, mask_index.png',
+      'per-object mask PNG files when mask generation is enabled'
+    ],
+    ioHtml: `
+      <h3>저장 위치와 대표 파일</h3>
+      <pre class="doc-codeblock"><code>&lt;dataset_path&gt;/meta/detections/episode_0003/frame_0042/top/
+  detections.json
+  visualization.png
+  annotated_image.png
+  mask_index.png
+  object_001_red_cup_0_mask.png</code></pre>
+      <h3><code>detections.json</code> 예시</h3>
+      <pre class="doc-codeblock"><code>{
+  "timestamp": "2026-03-12T12:34:56",
+  "episode_index": 3,
+  "frame_index": 42,
+  "camera": "observation.images.top",
+  "image_shape": [480, 640, 3],
+  "mask_encoding": "object_id_index",
+  "detections": [
+    {
+      "index": 0,
+      "object_id": 1,
+      "label": "red cup",
+      "confidence": 0.91,
+      "bbox_normalized": [0.12, 0.18, 0.34, 0.56],
+      "has_mask": true,
+      "bbox_pixels": [76, 86, 217, 268],
+      "mask_file": "object_001_red_cup_0_mask.png"
+    }
+  ],
+  "object_name_map": {
+    "1": "red cup"
+  },
+  "mask_index_file": "mask_index.png"
+}</code></pre>
+      <ul>
+        <li><code>bbox_normalized</code>는 0~1 기준 좌표입니다.</li>
+        <li><code>bbox_pixels</code>는 실제 이미지 픽셀 좌표입니다.</li>
+        <li><code>mask_index_file</code>은 object id를 픽셀값으로 가지는 합성 마스크입니다.</li>
+      </ul>
+    `,
     tech: {
       component: 'physical_ai_manager/src/pages/ObjectDetectionPage.js',
       helpers: 'dataset validation + frame player + mask overlay composition',
@@ -1139,9 +1481,9 @@ window.PAGE_DOCS = {
     `
   },
   tt: {
-    title: 'Task Orchestration',
+    title: 'Subtask',
     subtitle: 'Trajectory-guided subtask and sequence authoring',
-    purpose: 'Use Task Orchestration to break an episode into subtasks, inspect trajectory and action-change cues, and save a reusable task sequence definition based on recorded data.',
+    purpose: 'Use Subtask to break an episode into subtasks, inspect trajectory and action-change cues, and save a reusable task sequence definition based on recorded data.',
     accessRule: 'Use on recorded datasets after at least one inspection pass.',
     bestFor: 'Subtask segmentation, marker authoring, and sequence export',
     runtimeMode: 'Offline task-structure authoring',
@@ -1160,9 +1502,55 @@ window.PAGE_DOCS = {
     services: ['/dataset/get_info', '/dataset/get_sample_image', '/dataset/get_parquet_data', '/task/save_sequence'],
     topics: ['Primarily service-driven for this page'],
     inputs: ['Dataset path', 'Episode selection', 'Split mode', 'Marker edits and annotations'],
-    outputs: ['Task sequence JSON and saved segmentation metadata'],
+    outputs: ['Task sequence JSON and saved segmentation metadata under annotations/task_sequences/'],
     relatedPages: ['Visualize helps inspect the same trajectory data', 'Kinematics can improve the available EEF information first'],
-    artifacts: ['Saved task sequence definitions', 'Local backup JSON if service save fails'],
+    artifacts: [
+      'annotations/task_sequences/episode_0000.json',
+      'subtask_segments with frame ranges and object references',
+      'Local backup JSON download if service save fails'
+    ],
+    ioHtml: `
+      <h3>저장 위치</h3>
+      <pre class="doc-codeblock"><code>&lt;dataset_path&gt;/annotations/task_sequences/episode_0000.json</code></pre>
+      <h3>대표 schema</h3>
+      <pre class="doc-codeblock"><code>{
+  "episodes": {
+    "12": {
+      "episode_index": 12,
+      "frames": {},
+      "subtask_segments": [
+        {
+          "start_frame": 18,
+          "end_frame": 54,
+          "skill_type": "pick",
+          "action_type": "grasp",
+          "primary_object_id": "1",
+          "primary_object": "cup",
+          "target_object_id": "",
+          "target_object": "",
+          "description": "pick up cup",
+          "action_change_frame": 54,
+          "phases": ["approach", "grasp"]
+        },
+        {
+          "start_frame": 55,
+          "end_frame": 103,
+          "skill_type": "place",
+          "action_type": "release",
+          "primary_object_id": "1",
+          "primary_object": "cup",
+          "target_object_id": "2",
+          "target_object": "tray",
+          "description": "place cup on tray",
+          "action_change_frame": 92,
+          "phases": ["transport", "release"]
+        }
+      ]
+    }
+  }
+}</code></pre>
+      <p>저장 실패 시 브라우저 쪽 local backup JSON이 함께 내려올 수 있으므로, sequence 작업은 파일처럼 버전 관리하는 편이 좋습니다.</p>
+    `,
     tech: {
       component: 'physical_ai_manager/src/pages/TaskOrchestrationPage.js',
       analysis: 'trajectory parsing + signal extraction + marker generation heuristics',
@@ -1236,7 +1624,7 @@ window.PAGE_DOCS = {
     topics: ['Service-driven page'],
     inputs: ['Dataset path', 'Base frame', 'Target frame'],
     outputs: ['EEF pose feature added to dataset', 'Updated preview and trajectory scatter'],
-    relatedPages: ['Visualize and Task Orchestration benefit directly from the converted data'],
+    relatedPages: ['Visualize and Subtask benefit directly from the converted data'],
     tech: {
       component: 'physical_ai_manager/src/pages/KinematicsPage.js',
       services: 'getDatasetInfo, convertToEEF, getParquetData, getScatterPlotData',
@@ -1288,9 +1676,9 @@ window.PAGE_DOCS = {
     `
   },
   calib: {
-    title: 'Camera Calibration',
+    title: 'Calibration',
     subtitle: 'Extrinsic calibration server control and embedded UI',
-    purpose: 'Use Camera Calibration to launch or monitor the calibration helper server, open the calibration UI, and apply a disciplined point-capture workflow for camera-to-robot alignment.',
+    purpose: 'Use Calibration to launch or monitor the calibration helper server, open the calibration UI, and apply a disciplined point-capture workflow for camera-to-robot alignment.',
     accessRule: 'Use when camera extrinsics drift or after a camera stack change.',
     bestFor: 'Camera-to-robot alignment and extrinsic recovery',
     runtimeMode: 'Calibration utility',
@@ -1431,76 +1819,10 @@ window.PAGE_DOCS = {
       </div>
     `
   },
-  subgoal: {
-    title: 'Subgoal Annotation',
-    subtitle: 'Experimental keyframe and subgoal timeline annotation',
-    purpose: 'Use Subgoal Annotation to segment recorded episodes into keyframes or subgoals, review the proposed boundaries, and save or reload subgoal annotations for experimental workflows.',
-    accessRule: 'Experimental page; use only when the backend path is confirmed.',
-    bestFor: 'Prototype subgoal annotation workflows',
-    runtimeMode: 'Experimental offline annotation',
-    audience: ['Research engineer', 'Subgoal annotation owner', 'Experimental feature validator'],
-    prerequisites: [
-      'A valid dataset and episode must already exist.',
-      'Confirm that the backend services for keyframe detection and annotation are available.',
-      'Treat this page as experimental unless your deployment explicitly depends on it.'
-    ],
-    features: [
-      'Loads dataset images and state context for an episode.',
-      'Can call automatic keyframe or segmentation services.',
-      'Lets you save and reload subgoal annotations.',
-      'Provides timeline-oriented review of the generated structure.'
-    ],
-    services: ['/dataset/get_info', '/browse_file', '/annotation/detect_keyframes', '/annotation/save', '/annotation/load', '/annotation/segment_episode', '/dataset/get_sample_image', '/dataset/get_parquet_data'],
-    topics: ['Service-driven page'],
-    inputs: ['Dataset path', 'Episode', 'Camera', 'Segmentation options'],
-    outputs: ['Saved subgoal annotation files and timeline structures'],
-    relatedPages: ['Task Orchestration is the more mature structured-task page in the current app'],
-    tech: {
-      component: 'physical_ai_manager/src/pages/SubgoalAnnotationPage.js',
-      serviceHook: 'detectKeyframes, saveAnnotation, loadAnnotation, segmentEpisode',
-      playback: 'episode frame player with annotation state',
-      status: 'experimental page not currently wired into main navigation'
-    },
-    userFlow: [
-      'Load dataset and episode context.',
-      'Run automatic segmentation or keyframe detection.',
-      'Adjust or verify the resulting boundaries.',
-      'Save and reload to confirm annotation integrity.'
-    ],
-    expectedResult: ['You can produce experimental subgoal structures for a recorded episode.'],
-    userTips: ['Because this page is not currently part of the main runtime navigation, verify backend readiness before planning around it.'],
-    guideHtml: `
-      <div class="doc-block">
-        <h3>Use this page carefully</h3>
-        <p>This page exists, but it is not currently wired into the main app navigation. Treat it as an experimental annotation surface rather than a guaranteed production workflow.</p>
-      </div>
-      <div class="doc-block">
-        <h3>Basic workflow</h3>
-        <ol class="step-list">
-          <li>
-            <span class="step-title">Load the dataset, episode, and camera</span>
-            <span class="step-detail">Make sure the selected camera actually shows the action transitions you care about.</span>
-          </li>
-          <li>
-            <span class="step-title">Run the automatic segmentation helper</span>
-            <span class="step-detail">Use the page services to generate the initial subgoal or keyframe structure.</span>
-          </li>
-          <li>
-            <span class="step-title">Review the result manually</span>
-            <span class="step-detail">Experimental automatic segmentation should never be trusted without manual spot checks.</span>
-          </li>
-          <li>
-            <span class="step-title">Save and reload</span>
-            <span class="step-detail">Always reload saved output at least once to confirm that the annotation is still interpretable after persistence.</span>
-          </li>
-        </ol>
-      </div>
-    `
-  },
   foundationpose: {
-    title: 'FoundationPose',
+    title: 'GraspPose',
     subtitle: 'Realtime 6D pose estimation workspace',
-    purpose: 'Use FoundationPose to estimate 6D object pose from a live image topic, optionally use SAM2-based prompt assist, and iterate on request JSON until pose outputs are stable and meaningful.',
+    purpose: 'Use GraspPose to estimate 6D object pose from a live image topic, optionally use SAM2-based prompt assist, and iterate on request JSON until pose outputs are stable and meaningful.',
     accessRule: 'Use on live camera topics when 6D pose is needed.',
     bestFor: 'Realtime pose-estimation experiments and prompt-assisted pose setup',
     runtimeMode: 'Real-time perception utility',
@@ -1520,7 +1842,7 @@ window.PAGE_DOCS = {
     topics: ['Live image topic through web_video_server'],
     inputs: ['Camera topic', 'Object name and prompt', 'Mesh path', 'Prompt points or boxes'],
     outputs: ['Estimated 6D pose and service response diagnostics'],
-    relatedPages: ['Realtime SAM2 provides closely related prompt logic', 'RAIN can reuse live scene object context'],
+    relatedPages: ['RT-SAM provides closely related prompt logic', 'RAIN can reuse live scene object context'],
     tech: {
       component: 'physical_ai_manager/src/pages/FoundationPosePage.js',
       services: 'foundationPoseEstimate, getImageTopicList, sam2RealtimeInfer',
@@ -1553,7 +1875,7 @@ window.PAGE_DOCS = {
           </li>
           <li>
             <span class="step-title">Use prompt assist if localization is weak</span>
-            <span class="step-detail">The page can call SAM2 realtime inference to get a stronger starting point before asking for FoundationPose output.</span>
+            <span class="step-detail">The page can call SAM2 realtime inference to get a stronger starting point before asking for GraspPose output.</span>
           </li>
           <li>
             <span class="step-title">Run estimation and inspect latency and pose</span>
@@ -1590,7 +1912,7 @@ window.PAGE_DOCS = {
     topics: ['Live image topic through web_video_server'],
     inputs: ['Live topic', 'Object prompts', 'RAIN action type and step parameters'],
     outputs: ['Tracked object state', 'RAIN sequence drafts', 'Saved task sequence'],
-    relatedPages: ['Realtime SAM2 is the closest base workflow', 'Task Orchestration is the offline counterpart for sequence authoring'],
+    relatedPages: ['RT-SAM is the closest base workflow', 'Subtask is the offline counterpart for sequence authoring'],
     artifacts: ['Saved RAIN task sequence path'],
     tech: {
       component: 'physical_ai_manager/src/pages/RAINPage.js',
@@ -1638,10 +1960,58 @@ window.PAGE_DOCS = {
       </div>
     `
   },
+  pri4r: {
+    title: 'Pri4R',
+    subtitle: 'Reserved research workspace',
+    purpose: 'Use Pri4R only when your deployment adds Pri4R-specific experiments or dashboards. In the current app code, this page is a reserved research workspace placeholder.',
+    accessRule: 'Developing page; open only when your branch adds Pri4R content.',
+    bestFor: 'Research-only placeholder validation',
+    runtimeMode: 'Reserved research workspace',
+    audience: ['Research engineer', 'Prototype owner', 'Internal workflow maintainer'],
+    prerequisites: [
+      'Confirm that your branch or deployment actually adds Pri4R-specific content.',
+      'Do not expect a production workflow here in the default app code.'
+    ],
+    features: [
+      'Shows a reserved page shell for future Pri4R experiments.',
+      'Makes it obvious when no Pri4R-specific workflow has been implemented yet.'
+    ],
+    services: [],
+    topics: [],
+    inputs: ['No standard input in the current placeholder page'],
+    outputs: ['No standard output in the current placeholder page'],
+    relatedPages: ['RAIN is the active research workflow page in the current app'],
+    tech: {
+      component: 'physical_ai_manager/src/pages/Pri4RPage.js',
+      status: 'placeholder page',
+      scope: 'reserved for future Pri4R-specific experiments'
+    },
+    userFlow: [
+      'Open the page only if a Pri4R-specific workflow is expected in your deployment.',
+      'Check whether custom cards, tools, or dashboards have been added.',
+      'If the page is still blank, return to the active workflow pages.'
+    ],
+    expectedResult: ['You quickly confirm whether a Pri4R-specific extension exists in the current deployment.'],
+    userTips: ['Treat this page as a placeholder unless your branch explicitly adds Pri4R tools.'],
+    guideHtml: `
+      <div class="doc-block">
+        <h3>Current state of this page</h3>
+        <p>The upstream app keeps Pri4R as a reserved research workspace. If your team has not added custom content, seeing a mostly empty page is expected.</p>
+      </div>
+      <div class="doc-callout warn">
+        <h3>What this means operationally</h3>
+        <ul>
+          <li>Do not plan a normal operator workflow around this page yet.</li>
+          <li>Use it only when a project-specific Pri4R extension has already been implemented.</li>
+          <li>If you need a working research flow today, RAIN is the active page in the current app.</li>
+        </ul>
+      </div>
+    `
+  },
   steering: {
-    title: 'Human Override',
+    title: 'Steering',
     subtitle: 'Fast operator takeover and return-to-policy',
-    purpose: 'Use Human Override when live inference is already running and the operator needs a minimal, fast control surface to take over or hand control back to the policy.',
+    purpose: 'Use Steering when live inference is already running and the operator needs a minimal, fast control surface to take over or hand control back to the policy.',
     accessRule: 'Use together with Inference, not as a replacement for it.',
     bestFor: 'Runtime intervention during live policy execution',
     runtimeMode: 'Operator override',
@@ -1679,7 +2049,7 @@ window.PAGE_DOCS = {
     guideHtml: `
       <div class="doc-block">
         <h3>When to use this page</h3>
-        <p>Human Override is not the main inference UI. Use it when the system is already running and you want the shortest possible path to human takeover or return-to-policy actions.</p>
+        <p>Steering is not the main inference UI. Use it when the system is already running and you want the shortest possible path to human takeover or return-to-policy actions.</p>
       </div>
       <div class="doc-block">
         <h3>Override workflow</h3>
