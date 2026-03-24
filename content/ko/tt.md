@@ -3,6 +3,12 @@ headline: "긴 작업을 '접근 → 잡기 → 들기 → 놓기' 같은 단계
 summary: "사이드바 이름: `Subtask`. 하나의 긴 에피소드를 의미 있는 작업 단계(subtask)로 나눕니다. 로봇 팔끝 궤적 그래프를 보면서 자동으로 구간을 나누고, 경계와 설명을 직접 수정한 뒤 저장합니다."
 goal: "긴 작업을 의미 있는 단계(접근, 잡기, 들기, 이동, 놓기 등)로 나누어 기록합니다."
 done: "`annotations/task_sequences/` 폴더에 sequence JSON 파일이 저장됩니다. 이 파일은 다른 분석이나 학습에 활용됩니다."
+output:
+  - name: "Subtask Sequence JSON"
+    desc: "에피소드별 JSON 파일 1개가 생깁니다. 각 subtask의 시작/끝 프레임, 타입(grasp, release, open, close, push, turn_on 등), 설명이 기록됩니다. Subgoal 페이지의 JSON과 같은 포맷이지만, 여기서는 EEF 궤적 기반으로 더 정밀하게 분할합니다"
+    path: "annotations/task_sequences/episode_XXXX.json"
+  - name: "EEF 궤적 시각화 (화면 표시)"
+    desc: "3D 뷰어에서 로봇 팔끝 궤적이 subtask 구간별로 색이 다르게 표시됩니다. X-Z, X-Y, Y-Z 투영 축을 바꿔가며 확인할 수 있습니다. Kinematics 변환이 선행되어야 합니다"
 caution: "자동 분할은 참고용 초안일 뿐입니다. AI가 나눈 경계가 반드시 맞는 것은 아니에요. 직접 궤적 그래프를 보면서 경계를 조정하지 않으면, 나중에 이 sequence를 쓸 때 단계가 어긋납니다."
 layout:
   - name: "데이터셋 선택"

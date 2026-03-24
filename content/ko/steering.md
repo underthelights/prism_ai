@@ -3,6 +3,11 @@ headline: "🚧 로봇이 이상하게 움직일 때 — 사람이 직접 끼어
 summary: "Inference에서 로봇이 자율로 움직이는 중에 위험하거나 이상한 동작이 보이면, 이 화면에서 사람이 직접 제어권을 가져옵니다. [btn:Take Over Now]를 눌러 사람 모드로 전환하고, 리더 로봇으로 교정한 뒤, [btn:Return To Policy]로 다시 AI에게 넘겨줍니다."
 goal: "위험한 동작을 즉시 멈추고, 사람이 직접 교정한 뒤, 안전하게 복귀하거나 종료합니다."
 done: "사람 개입으로 상황을 교정한 뒤 자율 실행에 복귀하거나, 안전하게 종료된 상태입니다."
+output:
+  - name: "개입 이벤트 로그"
+    desc: "사람이 개입한 시점, 이유(Unsafe motion, Pose drift, Wrong affordance, Grasp slip, Human judgment), 개입 시간, 현재 Task/Episode 번호가 런타임 정보에 기록됩니다. 이 기록은 나중에 정책 개선이나 문제 분석에 활용됩니다"
+  - name: "모드 전환 상태"
+    desc: "AUTO RUNNING(자율) ↔ HUMAN OVERRIDE(사람 제어) 전환 이력이 표시됩니다. 개입 빈도가 높으면 정책 재학습이 필요하다는 신호입니다"
 caution: "개입이 늦으면 로봇이 물체를 떨어뜨리거나 주변과 충돌할 수 있습니다. 이상한 느낌이 들면 주저하지 말고 바로 [btn:Take Over Now]를 누르세요. 늦게 개입하는 것보다 일찍 개입하는 것이 항상 안전합니다."
 layout:
   - name: "상태 표시"

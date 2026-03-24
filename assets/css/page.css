@@ -1367,6 +1367,32 @@ code {
   margin-bottom: 0.15rem;
 }
 
+/* ── Output map ── */
+.ui-layout-map.output-map {
+  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.04);
+}
+.ui-layout-map.output-map .output-item {
+  border-color: rgba(34, 197, 94, 0.22);
+  background: rgba(34, 197, 94, 0.06);
+  text-align: left;
+}
+.ui-layout-map.output-map .output-item strong {
+  color: #86efac;
+}
+.output-path {
+  display: block;
+  margin-top: 0.3rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.35);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.7rem;
+  color: #a5b4fc;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
 @media (max-width: 920px) {
   .intro-card-grid,
   .meta-chip-grid,

@@ -3,6 +3,13 @@ headline: "데이터가 부족할 때 — 이미지와 지시문을 다양하게
 summary: "녹화 데이터가 적으면 학습이 잘 안 됩니다. 이 화면에서는 기존 데이터를 바탕으로 이미지를 변형하거나(Vision), 작업 지시문을 다양하게 바꿔서(Language) 데이터를 늘립니다. 원본은 그대로 두고 새로운 변형 데이터를 추가하는 방식이에요."
 goal: "학습 데이터의 양과 다양성을 안전하게 늘립니다."
 done: "증강된 이미지 데이터셋 또는 다양하게 변형된 작업 지시문이 저장됩니다."
+output:
+  - name: "Vision 증강 데이터셋"
+    desc: "원본 데이터셋과 동일한 LeRobot v2.1 구조로 새 데이터셋이 생깁니다. 원본 이미지에 밝기/노이즈/블러/색조 변환이 적용된 영상과 동일한 parquet 데이터가 지정한 출력 폴더에 저장됩니다. 원본은 건드리지 않습니다"
+  - name: "View Transfer 합성 영상"
+    desc: "카메라 시점을 가상으로 바꾼 합성 영상이 생깁니다. Local Warp MVP, Interactive World Model, Custom Adapter 중 선택한 방식으로 생성됩니다. Synthetic Camera Suffix로 지정한 이름으로 새 카메라 폴더가 추가됩니다"
+  - name: "Language 증강 지시문"
+    desc: "원래 작업 지시문의 변형이 데이터셋에 추가됩니다. 예: 원본 'pick up the cup' → 변형 'grab the mug from the table', 'lift the cup'. parquet의 language_instruction 컬럼과 tasks.jsonl이 업데이트됩니다"
 caution: "이미지를 너무 과하게 변형하면(예: 밝기를 극단적으로 바꾸기) 실제 카메라 영상과 달라져서 오히려 학습 품질이 떨어집니다. 미리보기로 '이게 실제 카메라에서 나올 법한 영상인가?'를 확인하세요. 지시문 변형도 원래 의미가 바뀌지 않았는지 하나씩 읽어보세요."
 layout:
   - name: "모드 탭"

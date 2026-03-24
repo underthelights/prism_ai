@@ -201,6 +201,43 @@
         letter-spacing: 0.16em;
         text-transform: uppercase;
       }
+      /* ── URDF Viewer ── */
+      .urdf-viewer-wrap {
+        position: relative;
+        width: 100%;
+        margin: 1rem 0 0.5rem;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid rgba(34, 211, 238, 0.14);
+        background: rgba(12, 14, 22, 0.9);
+      }
+      .urdf-viewer-wrap canvas {
+        display: block;
+        width: 100% !important;
+        height: 340px !important;
+        cursor: grab;
+      }
+      .urdf-viewer-wrap canvas:active { cursor: grabbing; }
+      .urdf-viewer-label {
+        position: absolute;
+        top: 0.7rem;
+        left: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.3rem 0.7rem;
+        border-radius: 999px;
+        background: rgba(12, 14, 22, 0.7);
+        border: 1px solid rgba(34, 211, 238, 0.18);
+        backdrop-filter: blur(8px);
+        color: #a5f3fc;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        z-index: 2;
+        pointer-events: none;
+      }
       .hero-quick-grid {
         margin-top: 1rem;
         display: grid;
@@ -686,6 +723,11 @@
             </div>
           </div>
 
+          <div class="urdf-viewer-wrap">
+            <span class="urdf-viewer-label">3D Model &mdash; OMY F3M</span>
+            <canvas id="viewer-omy"></canvas>
+          </div>
+
         </section>
 
         <section class="home-section" id="what-prism">
@@ -864,6 +906,94 @@
       <span>PRISM Screen &mdash; OMY Mode</span>
       <a href="#overview">Top</a>
     </footer>
+
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+        "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+    </script>
+    <script type="module">
+      import * as THREE from 'three';
+      import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+      import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
+      import URDFLoader from '../assets/vendor/URDFLoader.js';
+
+      const canvas = document.getElementById('viewer-omy');
+      if (canvas) {
+        const matDefault = () => new THREE.MeshStandardMaterial({ color: 0x505050, metalness: 0.5, roughness: 0.5 });
+
+        function loadMesh(path, manager, onComplete) {
+          new STLLoader(manager).load(path, g => {
+            g.computeVertexNormals();
+            const m = new THREE.Mesh(g, matDefault()); m.castShadow = true;
+            onComplete(m);
+          }, undefined, () => onComplete(new THREE.Mesh(new THREE.BoxGeometry(0.02,0.02,0.02), new THREE.MeshStandardMaterial({color:0xff0000}))));
+        }
+
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.0;
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0c0e16);
+
+        const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 50);
+        camera.position.set(1.3, 1.0, 1.3);
+        camera.lookAt(0, 0.25, 0);
+
+        const controls = new OrbitControls(camera, canvas);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.06;
+        controls.target.set(0, 0.25, 0);
+        controls.minDistance = 0.2;
+        controls.maxDistance = 4;
+        controls.enablePan = false;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 1.2;
+
+        scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+        const dir = new THREE.DirectionalLight(0xffffff, 1.1);
+        dir.position.set(3, 6, 4); dir.castShadow = true;
+        scene.add(dir);
+        const dir2 = new THREE.DirectionalLight(0xffffff, 0.3);
+        dir2.position.set(-3, 3, -3);
+        scene.add(dir2);
+
+        const grid = new THREE.GridHelper(2, 20, 0x2a2a3a, 0x1a1a28);
+        grid.material.transparent = true; grid.material.opacity = 0.4;
+        scene.add(grid);
+
+        const plane = new THREE.Mesh(new THREE.PlaneGeometry(4, 4), new THREE.ShadowMaterial({ opacity: 0.25 }));
+        plane.rotation.x = -Math.PI / 2; plane.position.y = -0.001; plane.receiveShadow = true;
+        scene.add(plane);
+
+        const loader = new URDFLoader();
+        loader.loadMeshCb = (path, manager, onComplete) => loadMesh(path, manager, onComplete);
+        loader.load('../urdf/omy_f3m/omy_f3m_clean.urdf', robot => {
+          robot.rotation.set(-Math.PI / 2, 0, 0);
+          robot.traverse(ch => { if (ch.isMesh) { ch.material = matDefault(); ch.castShadow = true; ch.receiveShadow = true; } });
+          scene.add(robot);
+        }, null, err => console.error('URDF load error', err));
+
+        function resize() {
+          const rect = canvas.getBoundingClientRect();
+          const w = rect.width, h = 340;
+          renderer.setSize(w, h, false);
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); }
+        animate();
+      }
+    </script>
 
     <script src="../assets/js/page-data.js"></script>
     <script src="../assets/js/page-enrichment.js"></script>

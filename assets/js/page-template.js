@@ -100,6 +100,7 @@
         done: meta.done || '',
         caution: meta.caution || '',
         layoutMap: Array.isArray(meta.layout) ? meta.layout : [],
+        outputMap: Array.isArray(meta.output) ? meta.output : [],
         steps: steps,
         images: images,
       };
@@ -320,6 +321,18 @@
                   <img src="${BASE}content/${img.src.replace(/^\.\.\//,'')}" alt="${escapeHtml(img.alt)}" loading="lazy" style="width:100%;border-radius:12px;border:1px solid rgba(168,85,247,0.18);margin-top:1rem;" />
                   ${img.alt ? `<figcaption style="text-align:center;opacity:0.6;font-size:0.85rem;margin-top:0.4rem;">${escapeHtml(img.alt)}</figcaption>` : ''}
                 </figure>
+              `).join('')}
+            </div>
+          ` : ''}
+          ${(quickGuide.outputMap || []).length ? `
+            <h3 style="margin-top:1.2rem;">이 화면의 출력물</h3>
+            <div class="ui-layout-map output-map">
+              ${quickGuide.outputMap.map((item) => `
+                <div class="area-label output-item">
+                  <strong>${escapeHtml(item.name)}</strong>
+                  ${item.desc ? renderGuideMarkup(item.desc) : ''}
+                  ${item.path ? `<code class="output-path">${escapeHtml(item.path)}</code>` : ''}
+                </div>
               `).join('')}
             </div>
           ` : ''}
