@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PRISM | OMY Mode — Operator Manual Override</title>
+    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../assets/css/page.css" />
+    <style>
+      .topbar-home {
+        width: min(1180px, calc(100% - 2rem));
+      }
+      .docs-layout {
+        display: grid;
+        grid-template-columns: 270px minmax(0, 1fr);
+        gap: 1rem;
+        align-items: start;
+        padding: 1.2rem 0 2rem;
+      }
+      .docs-sidebar {
+        position: sticky;
+        top: 5.2rem;
+        max-height: calc(100vh - 6.4rem);
+        overflow-y: auto;
+        border-radius: 24px;
+        padding: 1rem;
+        background: rgba(18, 18, 26, 0.78);
+        border: 1px solid rgba(168, 85, 247, 0.16);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.18), 0 0 28px rgba(168, 85, 247, 0.08);
+      }
+      .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .sidebar-logo img {
+        height: 28px;
+        width: auto;
+      }
+      .sidebar-logo strong {
+        display: block;
+        color: #f8fbff;
+        font-size: 0.96rem;
+      }
+      .sidebar-logo span {
+        display: block;
+        margin-top: 0.12rem;
+        color: var(--nexus-text-muted);
+        font-size: 0.74rem;
+      }
+      .sidebar-search {
+        width: 100%;
+        border-radius: 14px;
+        border: 1px solid rgba(168, 85, 247, 0.18);
+        background: rgba(12, 13, 20, 0.9);
+        color: var(--nexus-text-primary);
+        padding: 0.82rem 0.9rem;
+        font: inherit;
+      }
+      .sidebar-search:focus {
+        outline: none;
+        border-color: rgba(168, 85, 247, 0.45);
+        box-shadow: 0 0 18px rgba(168, 85, 247, 0.16);
+      }
+      .sidebar-section {
+        margin-top: 1rem;
+      }
+      .sidebar-label {
+        display: block;
+        margin-bottom: 0.55rem;
+        color: var(--nexus-text-muted);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+      .sidebar-list {
+        display: grid;
+        gap: 0.34rem;
+      }
+      .sidebar-link {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.55rem;
+        align-items: center;
+        padding: 0.78rem 0.82rem;
+        border-radius: 14px;
+        text-decoration: none;
+        color: inherit;
+        border: 1px solid transparent;
+        transition: all 0.22s ease;
+      }
+      .sidebar-link:hover {
+        border-color: rgba(168, 85, 247, 0.2);
+        background: rgba(255,255,255,0.04);
+        transform: translateX(2px);
+      }
+      .sidebar-link strong {
+        display: block;
+        color: #eef4ff;
+        font-size: 0.86rem;
+      }
+      .sidebar-link span {
+        display: block;
+        margin-top: 0.12rem;
+        color: var(--nexus-text-secondary);
+        font-size: 0.75rem;
+        line-height: 1.45;
+      }
+      .sidebar-link em {
+        color: var(--nexus-text-muted);
+        font-style: normal;
+        font-size: 0.78rem;
+      }
+      .home-main {
+        display: grid;
+        gap: 1rem;
+      }
+      .home-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 1.5rem;
+        border-radius: 28px;
+      }
+      .home-hero::before {
+        content: '';
+        position: absolute;
+        inset: auto -18% -34% auto;
+        width: 420px;
+        height: 420px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(34, 211, 238, 0.18) 0%, transparent 68%);
+        pointer-events: none;
+      }
+      .home-hero::after {
+        content: '';
+        position: absolute;
+        inset: -26% auto auto -12%;
+        width: 360px;
+        height: 360px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(168, 85, 247, 0.16) 0%, transparent 70%);
+        pointer-events: none;
+      }
+      .home-hero-top {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+      }
+      .home-hero-copy {
+        width: 100%;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+      .home-hero-copy .title-stack {
+        text-align: center;
+      }
+      .home-hero-copy .title-stack {
+        margin-top: 0.85rem;
+      }
+      .home-hero-copy p {
+        margin: 0.7rem 0 0;
+        max-width: 720px;
+        color: var(--nexus-text-secondary);
+        line-height: 1.7;
+        font-size: 1rem;
+      }
+      .home-hero-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.42rem 0.8rem;
+        border-radius: 999px;
+        border: 1px solid rgba(34, 211, 238, 0.18);
+        background: rgba(34, 211, 238, 0.08);
+        color: #b6f1ff;
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .home-hero-actions {
+        justify-content: center;
+      }
+      .home-version {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.42rem 0.78rem;
+        border-radius: 999px;
+        background: rgba(18, 18, 26, 0.72);
+        border: 1px solid rgba(168, 85, 247, 0.24);
+        color: var(--nexus-text-secondary);
+        font-size: 0.72rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      .hero-quick-grid {
+        margin-top: 1rem;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+      .hero-quick-card {
+        padding: 0.95rem 1rem;
+        border-radius: 18px;
+        background: rgba(18, 18, 26, 0.72);
+        border: 1px solid rgba(168, 85, 247, 0.14);
+      }
+      .hero-quick-card span {
+        display: block;
+        color: var(--nexus-text-muted);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .hero-quick-card strong {
+        display: block;
+        margin-top: 0.32rem;
+        color: #f7f9ff;
+        font-size: 0.95rem;
+      }
+      .hero-quick-card p {
+        margin: 0.35rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.82rem;
+        line-height: 1.55;
+      }
+      .home-section {
+        border-radius: 24px;
+        padding: 1rem 1.05rem;
+        background: rgba(18, 18, 26, 0.7);
+        border: 1px solid rgba(168, 85, 247, 0.14);
+        backdrop-filter: blur(16px);
+      }
+      .home-section-head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0.9rem;
+      }
+      .home-section-head h2 {
+        margin: 0;
+        color: #f8fbff;
+        font-size: 1.3rem;
+        letter-spacing: -0.03em;
+      }
+      .home-section-head p {
+        margin: 0.35rem 0 0;
+        color: var(--nexus-text-secondary);
+        max-width: 760px;
+        line-height: 1.6;
+        font-size: 0.9rem;
+      }
+      .capability-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.85rem;
+      }
+      .capability-card {
+        display: block;
+        text-decoration: none;
+        border-radius: 18px;
+        padding: 1rem;
+        border: 1px solid rgba(168, 85, 247, 0.14);
+        background: linear-gradient(180deg, rgba(18, 18, 26, 0.82) 0%, rgba(12, 16, 25, 0.92) 100%);
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .capability-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(34, 211, 238, 0.24);
+        box-shadow: 0 0 28px rgba(34, 211, 238, 0.09);
+      }
+      .capability-card span {
+        display: block;
+        color: #9bd8ff;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .capability-card strong {
+        display: block;
+        margin-top: 0.42rem;
+        color: #f8fbff;
+        font-size: 1rem;
+      }
+      .capability-card p {
+        margin: 0.38rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.84rem;
+        line-height: 1.58;
+      }
+      .capability-card em {
+        display: inline-block;
+        margin-top: 0.72rem;
+        color: #cfe7ff;
+        font-style: normal;
+        font-size: 0.76rem;
+      }
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.85rem;
+      }
+      .robot-card {
+        border-radius: 20px;
+        padding: 0.95rem;
+        border: 1px solid rgba(168, 85, 247, 0.14);
+        background: linear-gradient(180deg, rgba(18, 18, 26, 0.9) 0%, rgba(10, 14, 22, 0.96) 100%);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+      }
+      .robot-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.3rem 0.58rem;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.05);
+        color: var(--nexus-text-muted);
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .robot-card strong {
+        display: block;
+        margin-top: 0.72rem;
+        color: #f8fbff;
+        font-size: 0.96rem;
+      }
+      .robot-card p {
+        margin: 0.38rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.82rem;
+        line-height: 1.56;
+      }
+      .robot-visual {
+        position: relative;
+        margin-top: 0.8rem;
+        height: 210px;
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.05);
+        background:
+          radial-gradient(circle at 50% 24%, rgba(34, 211, 238, 0.18) 0%, transparent 34%),
+          linear-gradient(180deg, rgba(21, 24, 35, 0.94) 0%, rgba(8, 10, 16, 0.98) 100%);
+      }
+      .robot-visual::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(168, 85, 247, 0.14) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(168, 85, 247, 0.14) 1px, transparent 1px);
+        background-size: 34px 34px;
+        opacity: 0.25;
+      }
+      .robot-visual svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .robot-visual .frame {
+        fill: none;
+        stroke: rgba(103, 232, 249, 0.9);
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        filter: drop-shadow(0 0 14px rgba(103, 232, 249, 0.28));
+      }
+      .robot-visual .ghost {
+        fill: rgba(103, 232, 249, 0.08);
+        stroke: rgba(236, 72, 153, 0.34);
+        stroke-width: 2.5;
+        stroke-dasharray: 6 8;
+      }
+      .robot-visual .accent {
+        fill: rgba(168, 85, 247, 0.25);
+        stroke: rgba(236, 72, 153, 0.9);
+        stroke-width: 4;
+        stroke-linecap: round;
+      }
+      .robot-visual .node {
+        fill: #dffcff;
+        filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.4));
+      }
+      .workflow-strip {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+      .workflow-step {
+        position: relative;
+        min-height: 144px;
+        border-radius: 18px;
+        padding: 0.95rem 1rem;
+        border: 1px solid rgba(168, 85, 247, 0.14);
+        background: linear-gradient(180deg, rgba(18, 18, 26, 0.82) 0%, rgba(13, 18, 28, 0.9) 100%);
+      }
+      .workflow-step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 1.35rem;
+        right: -0.72rem;
+        width: 0.92rem;
+        height: 2px;
+        background: linear-gradient(90deg, rgba(168, 85, 247, 0.9), rgba(34, 211, 238, 0.9));
+        box-shadow: 0 0 12px rgba(34, 211, 238, 0.22);
+      }
+      .workflow-step span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.9rem;
+        height: 1.9rem;
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(34, 211, 238, 0.9), rgba(168, 85, 247, 0.9));
+        color: #050508;
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+      .workflow-step strong {
+        display: block;
+        margin-top: 0.72rem;
+        color: #f8fbff;
+        font-size: 0.94rem;
+      }
+      .workflow-step p {
+        margin: 0.36rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.82rem;
+        line-height: 1.56;
+      }
+      .screen-groups {
+        display: grid;
+        gap: 1rem;
+      }
+      .screen-group {
+        border-radius: 22px;
+        padding: 1rem;
+        background: linear-gradient(180deg, rgba(18, 18, 26, 0.86) 0%, rgba(11, 12, 18, 0.92) 100%);
+        border: 1px solid rgba(168, 85, 247, 0.14);
+      }
+      .screen-group-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.34rem 0.62rem;
+        border-radius: 999px;
+        border: 1px solid rgba(34, 211, 238, 0.22);
+        background: rgba(34, 211, 238, 0.08);
+        color: #b6f1ff;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .screen-grid {
+        margin-top: 0.9rem;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.85rem;
+      }
+      .screen-card {
+        display: block;
+        text-decoration: none;
+        padding: 1rem;
+        border-radius: 18px;
+        border: 1px solid rgba(168, 85, 247, 0.12);
+        background: rgba(18, 18, 26, 0.76);
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .screen-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(168, 85, 247, 0.28);
+        box-shadow: 0 0 28px rgba(168, 85, 247, 0.12);
+      }
+      .screen-card strong {
+        display: block;
+        color: #f8fbff;
+        font-size: 0.98rem;
+      }
+      .screen-card span {
+        display: block;
+        margin-top: 0.24rem;
+        color: #cfe7ff;
+        font-size: 0.79rem;
+      }
+      .screen-card p {
+        margin: 0.55rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.84rem;
+        line-height: 1.58;
+      }
+      .screen-card em {
+        display: inline-block;
+        margin-top: 0.7rem;
+        color: #b6f1ff;
+        font-style: normal;
+        font-size: 0.76rem;
+      }
+      .ops-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+      .ops-card {
+        border-radius: 18px;
+        padding: 0.95rem 1rem;
+        background: rgba(18, 18, 26, 0.76);
+        border: 1px solid rgba(168, 85, 247, 0.12);
+      }
+      .ops-card strong {
+        display: block;
+        color: #f7f9ff;
+        font-size: 0.92rem;
+      }
+      .ops-card p {
+        margin: 0.42rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.83rem;
+        line-height: 1.58;
+      }
+      @media (max-width: 1100px) {
+        .docs-layout {
+          grid-template-columns: 1fr;
+        }
+        .docs-sidebar {
+          position: static;
+          max-height: none;
+          overflow-y: visible;
+        }
+      }
+      @media (max-width: 860px) {
+        .capability-grid,
+        .hero-quick-grid,
+        .screen-grid,
+        .ops-grid {
+          grid-template-columns: 1fr;
+        }
+        .gallery-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .workflow-strip {
+          grid-template-columns: 1fr;
+        }
+        .workflow-step:not(:last-child)::after {
+          display: none;
+        }
+        .home-hero-top,
+        .home-section-head {
+          flex-direction: column;
+          align-items: center;
+        }
+        .home-hero {
+          padding: 1.1rem;
+          border-radius: 20px;
+        }
+        .home-section {
+          padding: 0.85rem;
+        }
+      }
+      /* ── Tablet ── */
+      @media (max-width: 768px) {
+        .capability-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .gallery-grid {
+          grid-template-columns: 1fr;
+        }
+        .robot-visual {
+          height: 180px;
+        }
+      }
+      /* ── Phone ── */
+      @media (max-width: 480px) {
+        .docs-layout {
+          padding: 0.8rem 0 1.2rem;
+        }
+        .docs-sidebar {
+          border-radius: 18px;
+          padding: 0.8rem;
+        }
+        .capability-card,
+        .workflow-step,
+        .robot-card {
+          border-radius: 14px;
+          padding: 0.8rem;
+        }
+        .capability-grid {
+          grid-template-columns: 1fr;
+        }
+        .home-hero {
+          padding: 0.9rem;
+          border-radius: 16px;
+        }
+        .home-section {
+          border-radius: 16px;
+          padding: 0.75rem;
+        }
+        .home-section-head h2 {
+          font-size: 1.1rem;
+        }
+        .home-hero-copy p {
+          font-size: 0.88rem;
+        }
+        .hero-action-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .hero-action {
+          justify-content: center;
+        }
+        .sidebar-link {
+          padding: 0.65rem 0.7rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-layer">
+      <div class="bg-orb a"></div>
+      <div class="bg-orb b"></div>
+      <div class="bg-orb c"></div>
+      <div class="bg-grid"></div>
+      <div class="bg-noise"></div>
+    </div>
+
+    <header class="container topbar topbar-home">
+      <a class="brand" href="../index.html" aria-label="PRISM home">
+        <img src="../assets/images/logo_nexus.png" alt="PRISM" />
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#overview">Overview</a>
+        <a href="#what-prism">What</a>
+        <a href="#robot-gallery">Robots</a>
+        <a href="#workflow">Workflow</a>
+      </nav>
+    </header>
+
+    <main class="container docs-layout" id="overview">
+      <aside class="docs-sidebar glass-strong">
+        <div class="sidebar-logo">
+          <img src="../assets/images/logo_nexus.png" alt="PRISM" />
+          <div>
+            <strong>PRISM Manuals</strong>
+            <span>OMY Mode</span>
+          </div>
+        </div>
+        <input class="sidebar-search" id="screenSearch" type="search" placeholder="Search manuals" />
+        <div id="sidebarNav"></div>
+      </aside>
+
+      <div class="home-main">
+        <section class="home-hero hero-premium glass-strong nexus-glow" id="overview-card">
+          <div class="home-hero-top">
+            <div class="home-hero-copy">
+              <div class="home-hero-kicker">
+                <span class="version-dot-wrap"><span class="version-dot ping"></span><span class="version-dot"></span></span>
+                <span>Physical AI Flow</span>
+              </div>
+              <div class="title-stack">
+                <span class="prism-glow">PRISM</span>
+                <span class="prism">PRISM</span>
+                <span class="line">Physical AI Robotics &amp;</span>
+                <span class="line italic">Intelligence System Manager</span>
+              </div>
+              <p>
+                One connected workflow — from robot setup and data collection
+                to model training, deployment, and live human override.
+              </p>
+              <div class="hero-action-row home-hero-actions">
+                <a class="hero-action primary" href="./home/">Get Started</a>
+                <a class="hero-action secondary" href="./record/">Record Data</a>
+                <a class="hero-action ghost" href="./training/">Train a Model</a>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <section class="home-section" id="what-prism">
+          <div class="home-section-head">
+            <div>
+              <h2>What PRISM Does</h2>
+              <p>Six core capabilities that take you from a bare robot to an autonomous policy — each card links to its dedicated screen.</p>
+            </div>
+          </div>
+          <div class="capability-grid">
+            <a class="capability-card" href="./home/">
+              <span>Start</span>
+              <strong>Select Your Robot</strong>
+              <p>Pick your robot from the list and lock in the session. Every screen after this adapts to your selection.</p>
+              <em>Home &rarr;</em>
+            </a>
+            <a class="capability-card" href="./connect/">
+              <span>Onboard</span>
+              <strong>Add a New Robot</strong>
+              <p>Register a new robot platform with a config file and verify cameras, joints, and 3D model in Devices.</p>
+              <em>New Robot Setup &rarr;</em>
+            </a>
+            <a class="capability-card" href="./record/">
+              <span>Collect</span>
+              <strong>Record Demonstrations</strong>
+              <p>Teleoperate the robot while PRISM captures camera feeds, joint data, and success/fail labels per episode.</p>
+              <em>Record &rarr;</em>
+            </a>
+            <a class="capability-card" href="./datatools/">
+              <span>Curate</span>
+              <strong>Clean &amp; Inspect Data</strong>
+              <p>Quality-check recordings, delete bad episodes, add masks, merge datasets — all before training begins.</p>
+              <em>Data Tools &rarr;</em>
+            </a>
+            <a class="capability-card" href="./training/">
+              <span>Train</span>
+              <strong>Train a Policy</strong>
+              <p>Choose a dataset and policy type, hit start, and monitor loss curves and GPU usage in real time.</p>
+              <em>Training &rarr;</em>
+            </a>
+            <a class="capability-card" href="./inference/">
+              <span>Deploy</span>
+              <strong>Run on the Real Robot</strong>
+              <p>Load a trained policy onto the robot and watch it move. If anything goes wrong, take over instantly with Steering.</p>
+              <em>Inference &rarr;</em>
+            </a>
+          </div>
+        </section>
+
+        <section class="home-section" id="robot-gallery">
+          <div class="home-section-head">
+            <div>
+              <h2>Robot Gallery</h2>
+              <p>Representative robot profiles supported by PRISM. Each type has its own camera layout, joint mapping, and URDF model.</p>
+            </div>
+          </div>
+          <div class="gallery-grid">
+            <article class="robot-card">
+              <span class="robot-badge">Manipulator</span>
+              <div class="robot-visual">
+                <svg viewBox="0 0 260 210" aria-hidden="true">
+                  <rect class="ghost" x="28" y="150" width="204" height="26" rx="12"></rect>
+                  <path class="frame" d="M74 152 L104 128 L132 92 L166 112 L190 72"></path>
+                  <path class="frame" d="M190 72 L213 54"></path>
+                  <path class="accent" d="M212 54 L226 42"></path>
+                  <circle class="node" cx="74" cy="152" r="7"></circle>
+                  <circle class="node" cx="104" cy="128" r="7"></circle>
+                  <circle class="node" cx="132" cy="92" r="7"></circle>
+                  <circle class="node" cx="166" cy="112" r="7"></circle>
+                  <circle class="node" cx="190" cy="72" r="7"></circle>
+                </svg>
+              </div>
+              <strong>Arm Stack</strong>
+              <p>Single-arm setup with wrist, top, and third-person cameras. The most straightforward profile to get started with.</p>
+            </article>
+            <article class="robot-card">
+              <span class="robot-badge">Mobile</span>
+              <div class="robot-visual">
+                <svg viewBox="0 0 260 210" aria-hidden="true">
+                  <rect class="ghost" x="40" y="126" width="144" height="40" rx="16"></rect>
+                  <path class="frame" d="M70 126 L92 92 L122 74 L150 104"></path>
+                  <path class="frame" d="M150 104 L176 72"></path>
+                  <path class="accent" d="M176 72 L196 58"></path>
+                  <circle class="node" cx="70" cy="126" r="7"></circle>
+                  <circle class="node" cx="92" cy="92" r="7"></circle>
+                  <circle class="node" cx="122" cy="74" r="7"></circle>
+                  <circle class="node" cx="150" cy="104" r="7"></circle>
+                  <circle class="node" cx="176" cy="72" r="7"></circle>
+                  <circle class="frame" cx="74" cy="172" r="16"></circle>
+                  <circle class="frame" cx="150" cy="172" r="16"></circle>
+                </svg>
+              </div>
+              <strong>Mobile Base + Arm</strong>
+              <p>Wheeled base with a mounted arm. Requires follower/leader joint naming and careful topic alignment in the adapter.</p>
+            </article>
+            <article class="robot-card">
+              <span class="robot-badge">Vision</span>
+              <div class="robot-visual">
+                <svg viewBox="0 0 260 210" aria-hidden="true">
+                  <rect class="ghost" x="58" y="34" width="144" height="112" rx="18"></rect>
+                  <path class="frame" d="M76 54 L130 84 L184 54"></path>
+                  <path class="frame" d="M130 84 L130 146"></path>
+                  <path class="frame" d="M76 54 L76 132 L130 164"></path>
+                  <path class="frame" d="M184 54 L184 132 L130 164"></path>
+                  <circle class="node" cx="76" cy="54" r="6"></circle>
+                  <circle class="node" cx="130" cy="84" r="6"></circle>
+                  <circle class="node" cx="184" cy="54" r="6"></circle>
+                  <circle class="accent" cx="48" cy="44" r="8"></circle>
+                  <circle class="accent" cx="210" cy="66" r="8"></circle>
+                  <circle class="accent" cx="130" cy="26" r="8"></circle>
+                </svg>
+              </div>
+              <strong>Observation Rig</strong>
+              <p>Multi-camera setup focused on visual coverage. Verify camera positions and feeds in Devices before recording.</p>
+            </article>
+            <article class="robot-card">
+              <span class="robot-badge">Sandbox</span>
+              <div class="robot-visual">
+                <svg viewBox="0 0 260 210" aria-hidden="true">
+                  <rect class="ghost" x="56" y="34" width="148" height="132" rx="20"></rect>
+                  <path class="frame" d="M82 146 L112 110 L146 126 L180 76"></path>
+                  <path class="frame" d="M82 146 L64 168"></path>
+                  <path class="accent" d="M180 76 L204 54"></path>
+                  <circle class="node" cx="82" cy="146" r="7"></circle>
+                  <circle class="node" cx="112" cy="110" r="7"></circle>
+                  <circle class="node" cx="146" cy="126" r="7"></circle>
+                  <circle class="node" cx="180" cy="76" r="7"></circle>
+                  <path class="ghost" d="M92 50 L168 50 L196 96 L160 150 L96 150 L64 104 Z"></path>
+                </svg>
+              </div>
+              <strong>offline_robot</strong>
+              <p>No hardware required. Explore the full UI, test workflows, and prepare demos without a physical robot connected.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="home-section" id="workflow">
+          <div class="home-section-head">
+            <div>
+              <h2>End-to-End Workflow</h2>
+              <p>Five stages take you from raw demonstrations to autonomous operation — with a human safety net at every step.</p>
+            </div>
+          </div>
+          <div class="workflow-strip">
+            <article class="workflow-step">
+              <span>01</span>
+              <strong>Collect</strong>
+              <p>Teleoperate the robot and record episodes with success/failure labels.</p>
+            </article>
+            <article class="workflow-step">
+              <span>02</span>
+              <strong>Curate</strong>
+              <p>Clean, augment, and annotate your dataset with built-in visualization and segmentation tools.</p>
+            </article>
+            <article class="workflow-step">
+              <span>03</span>
+              <strong>Train</strong>
+              <p>Pair a dataset with a policy architecture, launch training, and monitor checkpoints and loss curves.</p>
+            </article>
+            <article class="workflow-step">
+              <span>04</span>
+              <strong>Deploy</strong>
+              <p>Load a trained policy onto the robot and run autonomous rollouts in real time.</p>
+            </article>
+            <article class="workflow-step">
+              <span>05</span>
+              <strong>Override</strong>
+              <p>Take manual control when needed, correct the robot, then hand back to the policy seamlessly.</p>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="container footer">
+      <span>PRISM Screen &mdash; OMY Mode</span>
+      <a href="#overview">Top</a>
+    </footer>
+
+    <script src="../assets/js/page-data.js"></script>
+    <script src="../assets/js/page-enrichment.js"></script>
+    <script>
+      const guideOrder = [
+        ['Start', ['home', 'connect', 'devices']],
+        ['Operation', ['record', 'training', 'inference', 'steering']],
+        ['Data Tools', ['datatools', 'augment', 'visualize', 'kinematics']],
+        ['Annotation', ['sam2', 'detection', 'tt', 'subgoal', 'embedding']],
+        ['Online', ['rtsam', 'rain', 'foundationpose', 'calib', 'pri4r']],
+      ];
+
+      const sidebarNav = document.getElementById('sidebarNav');
+      const screenSearch = document.getElementById('screenSearch');
+
+      function getFilteredGroups(query = '') {
+        const q = query.trim().toLowerCase();
+        return guideOrder
+          .map(([group, keys]) => {
+            const items = keys
+              .map((key) => ({ key, doc: window.PAGE_DOCS[key] }))
+              .filter(({ doc }) => {
+                const haystack = [
+                  doc.title,
+                  doc.subtitle,
+                  doc.purpose,
+                  ...(doc.features || []),
+                  ...(doc.userFlow || []),
+                ].join(' ').toLowerCase();
+                return !q || haystack.includes(q);
+              });
+            return [group, items];
+          })
+          .filter(([, items]) => items.length > 0);
+      }
+
+      function renderSidebar(groups) {
+        sidebarNav.innerHTML = groups.map(([group, items]) => `
+          <section class="sidebar-section">
+            <span class="sidebar-label">${group}</span>
+            <div class="sidebar-list">
+              ${items.map(({ key, doc }) => `
+                <a class="sidebar-link" href="./${key}/">
+                  <div>
+                    <strong>${doc.title}</strong>
+                    <span>${doc.subtitle}</span>
+                  </div>
+                  <em>Open</em>
+                </a>
+              `).join('')}
+            </div>
+          </section>
+        `).join('');
+      }
+
+      function renderAll(query = '') {
+        const groups = getFilteredGroups(query);
+        renderSidebar(groups);
+      }
+
+      screenSearch.addEventListener('input', (event) => renderAll(event.target.value));
+      renderAll();
+    </script>
+  </body>
+</html>

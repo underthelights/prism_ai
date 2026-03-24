@@ -1,0 +1,1553 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PRISM | UR5 Mode — Universal Robots UR5 Workflow</title>
+    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../assets/css/page.css" />
+    <style>
+      .topbar-home {
+        width: min(1180px, calc(100% - 2rem));
+      }
+      .docs-layout {
+        display: grid;
+        grid-template-columns: 270px minmax(0, 1fr);
+        gap: 1rem;
+        align-items: start;
+        padding: 1.2rem 0 2rem;
+      }
+      .docs-sidebar {
+        position: sticky;
+        top: 5.2rem;
+        max-height: calc(100vh - 6.4rem);
+        overflow-y: auto;
+        border-radius: 24px;
+        padding: 1rem;
+        background: rgba(18, 18, 26, 0.78);
+        border: 1px solid rgba(168, 85, 247, 0.16);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.18), 0 0 28px rgba(168, 85, 247, 0.08);
+      }
+      .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .sidebar-logo img {
+        height: 28px;
+        width: auto;
+      }
+      .sidebar-logo strong {
+        display: block;
+        color: #f8fbff;
+        font-size: 0.96rem;
+      }
+      .sidebar-logo span {
+        display: block;
+        margin-top: 0.12rem;
+        color: var(--nexus-text-muted);
+        font-size: 0.74rem;
+      }
+      .sidebar-search {
+        width: 100%;
+        border-radius: 14px;
+        border: 1px solid rgba(168, 85, 247, 0.18);
+        background: rgba(12, 13, 20, 0.9);
+        color: var(--nexus-text-primary);
+        padding: 0.82rem 0.9rem;
+        font: inherit;
+      }
+      .sidebar-search:focus {
+        outline: none;
+        border-color: rgba(168, 85, 247, 0.45);
+        box-shadow: 0 0 18px rgba(168, 85, 247, 0.16);
+      }
+      .sidebar-section {
+        margin-top: 1rem;
+      }
+      .sidebar-label {
+        display: block;
+        margin-bottom: 0.55rem;
+        color: var(--nexus-text-muted);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+      .sidebar-list {
+        display: grid;
+        gap: 0.34rem;
+      }
+      .sidebar-link {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.55rem;
+        align-items: center;
+        padding: 0.78rem 0.82rem;
+        border-radius: 14px;
+        text-decoration: none;
+        color: inherit;
+        border: 1px solid transparent;
+        transition: all 0.22s ease;
+      }
+      .sidebar-link:hover {
+        border-color: rgba(168, 85, 247, 0.2);
+        background: rgba(255,255,255,0.04);
+        transform: translateX(2px);
+      }
+      .sidebar-link strong {
+        display: block;
+        color: #eef4ff;
+        font-size: 0.86rem;
+      }
+      .sidebar-link span {
+        display: block;
+        margin-top: 0.12rem;
+        color: var(--nexus-text-secondary);
+        font-size: 0.75rem;
+        line-height: 1.45;
+      }
+      .sidebar-link em {
+        color: var(--nexus-text-muted);
+        font-style: normal;
+        font-size: 0.78rem;
+      }
+      .home-main {
+        display: grid;
+        gap: 1rem;
+      }
+      .home-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 1.5rem;
+        border-radius: 28px;
+      }
+      .home-hero::before {
+        content: '';
+        position: absolute;
+        inset: auto -18% -34% auto;
+        width: 420px;
+        height: 420px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, transparent 68%);
+        pointer-events: none;
+      }
+      .home-hero::after {
+        content: '';
+        position: absolute;
+        inset: -26% auto auto -12%;
+        width: 360px;
+        height: 360px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(34, 211, 238, 0.14) 0%, transparent 70%);
+        pointer-events: none;
+      }
+      .home-hero-top {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+      }
+      .home-hero-copy {
+        width: 100%;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+      .home-hero-copy .title-stack {
+        text-align: center;
+      }
+      .home-hero-copy .title-stack {
+        margin-top: 0.85rem;
+      }
+      .home-hero-copy p {
+        margin: 0.7rem 0 0;
+        max-width: 720px;
+        color: var(--nexus-text-secondary);
+        line-height: 1.7;
+        font-size: 1rem;
+      }
+      .home-hero-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.42rem 0.8rem;
+        border-radius: 999px;
+        border: 1px solid rgba(168, 85, 247, 0.22);
+        background: rgba(168, 85, 247, 0.1);
+        color: #e9d5ff;
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .home-hero-actions {
+        justify-content: center;
+      }
+      .hero-quick-grid {
+        margin-top: 1rem;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+      .hero-quick-card {
+        padding: 0.95rem 1rem;
+        border-radius: 18px;
+        background: rgba(18, 18, 26, 0.72);
+        border: 1px solid rgba(168, 85, 247, 0.14);
+      }
+      .hero-quick-card span {
+        display: block;
+        color: var(--nexus-text-muted);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .hero-quick-card strong {
+        display: block;
+        margin-top: 0.32rem;
+        color: #f7f9ff;
+        font-size: 0.95rem;
+      }
+      .hero-quick-card p {
+        margin: 0.35rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.82rem;
+        line-height: 1.55;
+      }
+      .home-section {
+        border-radius: 24px;
+        padding: 1rem 1.05rem;
+        background: rgba(18, 18, 26, 0.7);
+        border: 1px solid rgba(168, 85, 247, 0.14);
+        backdrop-filter: blur(16px);
+      }
+      .home-section-head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0.9rem;
+      }
+      .home-section-head h2 {
+        margin: 0;
+        color: #f8fbff;
+        font-size: 1.3rem;
+        letter-spacing: -0.03em;
+      }
+      .home-section-head p {
+        margin: 0.35rem 0 0;
+        color: var(--nexus-text-secondary);
+        max-width: 760px;
+        line-height: 1.6;
+        font-size: 0.9rem;
+      }
+      .capability-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.85rem;
+      }
+      .capability-card {
+        display: block;
+        text-decoration: none;
+        border-radius: 18px;
+        padding: 1rem;
+        border: 1px solid rgba(168, 85, 247, 0.14);
+        background: linear-gradient(180deg, rgba(18, 18, 26, 0.82) 0%, rgba(12, 16, 25, 0.92) 100%);
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .capability-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(168, 85, 247, 0.3);
+        box-shadow: 0 0 28px rgba(168, 85, 247, 0.12);
+      }
+      .capability-card span {
+        display: block;
+        color: #d8b4fe;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .capability-card strong {
+        display: block;
+        margin-top: 0.42rem;
+        color: #f8fbff;
+        font-size: 1rem;
+      }
+      .capability-card p {
+        margin: 0.38rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.84rem;
+        line-height: 1.58;
+      }
+      .capability-card em {
+        display: inline-block;
+        margin-top: 0.72rem;
+        color: #e9d5ff;
+        font-style: normal;
+        font-size: 0.76rem;
+      }
+      .workflow-strip {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+      .workflow-step {
+        position: relative;
+        min-height: 144px;
+        border-radius: 18px;
+        padding: 0.95rem 1rem;
+        border: 1px solid rgba(168, 85, 247, 0.14);
+        background: linear-gradient(180deg, rgba(18, 18, 26, 0.82) 0%, rgba(13, 18, 28, 0.9) 100%);
+      }
+      .workflow-step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 1.35rem;
+        right: -0.72rem;
+        width: 0.92rem;
+        height: 2px;
+        background: linear-gradient(90deg, rgba(168, 85, 247, 0.9), rgba(34, 211, 238, 0.9));
+        box-shadow: 0 0 12px rgba(168, 85, 247, 0.22);
+      }
+      .workflow-step span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.9rem;
+        height: 1.9rem;
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(168, 85, 247, 0.9), rgba(34, 211, 238, 0.9));
+        color: #050508;
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+      .workflow-step strong {
+        display: block;
+        margin-top: 0.72rem;
+        color: #f8fbff;
+        font-size: 0.94rem;
+      }
+      .workflow-step p {
+        margin: 0.36rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.82rem;
+        line-height: 1.56;
+      }
+      /* ── UR5 Dashboard Table ── */
+      .dash-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 0.9rem;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid rgba(168, 85, 247, 0.16);
+      }
+      .dash-table th,
+      .dash-table td {
+        padding: 0.75rem 1rem;
+        text-align: left;
+        font-size: 0.86rem;
+      }
+      .dash-table thead th {
+        background: rgba(168, 85, 247, 0.12);
+        color: #e9d5ff;
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .dash-table tbody td {
+        background: rgba(18, 18, 26, 0.5);
+        border-top: 1px solid rgba(168, 85, 247, 0.08);
+        color: var(--nexus-text-secondary);
+      }
+      .dash-table tbody td:first-child {
+        color: #f8fbff;
+        font-weight: 600;
+      }
+      /* ── Record Phase Strip ── */
+      .phase-strip {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0.65rem;
+        margin-top: 0.9rem;
+      }
+      .phase-item {
+        border-radius: 14px;
+        padding: 0.7rem 0.8rem;
+        border: 1px solid rgba(168, 85, 247, 0.14);
+        background: rgba(18, 18, 26, 0.6);
+        text-align: center;
+        position: relative;
+      }
+      .phase-item:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: -0.52rem;
+        width: 0.6rem;
+        height: 2px;
+        background: linear-gradient(90deg, rgba(168, 85, 247, 0.8), rgba(34, 211, 238, 0.8));
+        transform: translateY(-50%);
+      }
+      .phase-item strong {
+        display: block;
+        color: #e9d5ff;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+      }
+      .phase-item span {
+        display: block;
+        margin-top: 0.2rem;
+        color: var(--nexus-text-muted);
+        font-size: 0.72rem;
+      }
+      /* ── Data format tree ── */
+      .data-tree {
+        margin-top: 0.8rem;
+        padding: 0.9rem 1rem;
+        border-radius: 14px;
+        border: 1px solid rgba(168, 85, 247, 0.14);
+        background: rgba(6, 10, 18, 0.8);
+        font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+        font-size: 0.78rem;
+        line-height: 1.7;
+        color: #d9f8ff;
+        white-space: pre;
+        overflow-x: auto;
+      }
+      /* ── Tools grid ── */
+      .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.8rem;
+        margin-top: 0.9rem;
+      }
+      .tool-card {
+        border-radius: 16px;
+        padding: 0.9rem 1rem;
+        border: 1px solid rgba(168, 85, 247, 0.14);
+        background: rgba(18, 18, 26, 0.68);
+      }
+      .tool-card strong {
+        display: block;
+        color: #f8fbff;
+        font-size: 0.92rem;
+      }
+      .tool-card p {
+        margin: 0.3rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.82rem;
+        line-height: 1.56;
+      }
+      /* ── Augment grid ── */
+      .aug-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
+        margin-top: 0.9rem;
+      }
+      .aug-card {
+        border-radius: 14px;
+        padding: 0.8rem 0.9rem;
+        border: 1px solid rgba(168, 85, 247, 0.12);
+        background: rgba(18, 18, 26, 0.6);
+      }
+      .aug-card strong {
+        display: block;
+        color: #f7f9ff;
+        font-size: 0.88rem;
+      }
+      .aug-card span {
+        display: block;
+        margin-top: 0.15rem;
+        color: var(--nexus-text-muted);
+        font-size: 0.72rem;
+      }
+      .aug-card p {
+        margin: 0.25rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.8rem;
+        line-height: 1.5;
+      }
+      /* ── Architecture diagram ── */
+      .arch-diagram {
+        margin-top: 0.8rem;
+        padding: 1rem 1.2rem;
+        border-radius: 14px;
+        border: 1px solid rgba(168, 85, 247, 0.14);
+        background: rgba(6, 10, 18, 0.8);
+        font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+        font-size: 0.72rem;
+        line-height: 1.65;
+        color: #d9f8ff;
+        white-space: pre;
+        overflow-x: auto;
+      }
+      /* ── Code blocks ── */
+      .code-block {
+        margin-top: 0.6rem;
+        padding: 0.8rem 1rem;
+        border-radius: 12px;
+        border: 1px solid rgba(168, 85, 247, 0.12);
+        background: rgba(6, 10, 18, 0.85);
+        font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+        font-size: 0.76rem;
+        line-height: 1.7;
+        color: #c4e8f0;
+        white-space: pre;
+        overflow-x: auto;
+      }
+      .code-block .comment { color: #6b7280; }
+      .code-block .cmd { color: #a78bfa; }
+      /* ── Step list ── */
+      .step-list {
+        display: grid;
+        gap: 0.6rem;
+        margin-top: 0.9rem;
+        counter-reset: step-counter;
+      }
+      .step-item {
+        display: grid;
+        grid-template-columns: 2.2rem 1fr;
+        gap: 0.8rem;
+        align-items: start;
+        padding: 0.8rem 0.9rem;
+        border-radius: 14px;
+        border: 1px solid rgba(168, 85, 247, 0.12);
+        background: rgba(18, 18, 26, 0.6);
+        counter-increment: step-counter;
+      }
+      .step-num {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(168, 85, 247, 0.85), rgba(34, 211, 238, 0.85));
+        color: #050508;
+        font-size: 0.76rem;
+        font-weight: 800;
+        flex-shrink: 0;
+      }
+      .step-body strong {
+        display: block;
+        color: #f8fbff;
+        font-size: 0.9rem;
+      }
+      .step-body p {
+        margin: 0.2rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.82rem;
+        line-height: 1.55;
+      }
+      .step-body code {
+        padding: 0.15rem 0.4rem;
+        border-radius: 6px;
+        background: rgba(168, 85, 247, 0.12);
+        color: #e9d5ff;
+        font-size: 0.76rem;
+        font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+      }
+      /* ── Config table ── */
+      .config-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.7rem;
+        margin-top: 0.9rem;
+      }
+      .config-card {
+        border-radius: 14px;
+        padding: 0.8rem 0.9rem;
+        border: 1px solid rgba(168, 85, 247, 0.12);
+        background: rgba(18, 18, 26, 0.6);
+      }
+      .config-card span {
+        display: block;
+        color: var(--nexus-text-muted);
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .config-card strong {
+        display: block;
+        margin-top: 0.2rem;
+        color: #f7f9ff;
+        font-size: 0.88rem;
+      }
+      .config-card p {
+        margin: 0.2rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.78rem;
+        line-height: 1.5;
+      }
+      @media (max-width: 860px) {
+        .config-grid { grid-template-columns: 1fr; }
+        .arch-diagram { font-size: 0.62rem; }
+      }
+      @media (max-width: 1100px) {
+        .docs-layout {
+          grid-template-columns: 1fr;
+        }
+        .docs-sidebar {
+          position: static;
+          max-height: none;
+          overflow-y: visible;
+        }
+      }
+      @media (max-width: 860px) {
+        .capability-grid,
+        .hero-quick-grid,
+        .tools-grid,
+        .aug-grid {
+          grid-template-columns: 1fr;
+        }
+        .workflow-strip,
+        .phase-strip {
+          grid-template-columns: 1fr;
+        }
+        .workflow-step:not(:last-child)::after,
+        .phase-item:not(:last-child)::after {
+          display: none;
+        }
+        .home-hero-top,
+        .home-section-head {
+          flex-direction: column;
+          align-items: center;
+        }
+        .home-hero {
+          padding: 1.1rem;
+          border-radius: 20px;
+        }
+        .home-section {
+          padding: 0.85rem;
+        }
+      }
+      /* ── Tablet ── */
+      @media (max-width: 768px) {
+        .capability-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .tools-grid {
+          grid-template-columns: 1fr;
+        }
+        .aug-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      /* ── Phone ── */
+      @media (max-width: 480px) {
+        .docs-layout {
+          padding: 0.8rem 0 1.2rem;
+        }
+        .docs-sidebar {
+          border-radius: 18px;
+          padding: 0.8rem;
+        }
+        .capability-card,
+        .workflow-step {
+          border-radius: 14px;
+          padding: 0.8rem;
+        }
+        .capability-grid,
+        .aug-grid {
+          grid-template-columns: 1fr;
+        }
+        .home-hero {
+          padding: 0.9rem;
+          border-radius: 16px;
+        }
+        .home-section {
+          border-radius: 16px;
+          padding: 0.75rem;
+        }
+        .home-section-head h2 {
+          font-size: 1.1rem;
+        }
+        .home-hero-copy p {
+          font-size: 0.88rem;
+        }
+        .hero-action-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .hero-action {
+          justify-content: center;
+        }
+        .sidebar-link {
+          padding: 0.65rem 0.7rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-layer">
+      <div class="bg-orb a"></div>
+      <div class="bg-orb b"></div>
+      <div class="bg-orb c"></div>
+      <div class="bg-grid"></div>
+      <div class="bg-noise"></div>
+    </div>
+
+    <header class="container topbar topbar-home">
+      <a class="brand" href="../index.html" aria-label="PRISM home">
+        <img src="../assets/images/logo_nexus.png" alt="PRISM" />
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="../index.html">Mode Select</a>
+        <a href="#overview">Overview</a>
+        <a href="#screens">Screens</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#ros2">ROS 2</a>
+        <a href="#setup">Setup</a>
+        <a href="#api">API</a>
+        <a href="#site-config">Site</a>
+      </nav>
+    </header>
+
+    <main class="container docs-layout" id="overview">
+      <aside class="docs-sidebar glass-strong">
+        <div class="sidebar-logo">
+          <img src="../assets/images/logo_nexus.png" alt="PRISM" />
+          <div>
+            <strong>PRISM Manuals</strong>
+            <span>UR5 Mode</span>
+          </div>
+        </div>
+        <input class="sidebar-search" id="screenSearch" type="search" placeholder="Search manuals" />
+        <div id="sidebarNav"></div>
+      </aside>
+
+      <div class="home-main">
+        <!-- ── Hero ── -->
+        <section class="home-hero hero-premium glass-strong nexus-glow" id="overview-card">
+          <div class="home-hero-top">
+            <div class="home-hero-copy">
+              <div class="home-hero-kicker">
+                <span class="version-dot-wrap"><span class="version-dot ping"></span><span class="version-dot"></span></span>
+                <span>UR5 Workflow</span>
+              </div>
+              <div class="title-stack">
+                <span class="prism-glow">PRISM</span>
+                <span class="prism">PRISM</span>
+                <span class="line">UR5 Robot</span>
+                <span class="line italic">Dedicated Workflow</span>
+              </div>
+              <p>
+                End-to-end pipeline for Universal Robots UR5 &mdash; robot setup, dashboard control,
+                teleoperation data collection, dataset management, and augmentation.
+              </p>
+              <div class="hero-action-row home-hero-actions">
+                <a class="hero-action primary" href="./home/">Launch Pipeline</a>
+                <a class="hero-action secondary" href="./devices/">Devices</a>
+                <a class="hero-action ghost" href="./record/">Record Data</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Screens Overview ── -->
+        <section class="home-section" id="screens">
+          <div class="home-section-head">
+            <div>
+              <h2>UR5 Workflow Screens</h2>
+              <p>Five core screens that take you from robot selection to augmented training data &mdash; each card links to its dedicated page.</p>
+            </div>
+          </div>
+          <div class="capability-grid">
+            <a class="capability-card" href="./home/">
+              <span>Select</span>
+              <strong>Home &mdash; Robot Selection</strong>
+              <p>Choose your robot type (UR5, OMY F3M, OMX F, FFW), verify ROS connection via HeartbeatStatus, then launch the pipeline.</p>
+              <em>Home &rarr;</em>
+            </a>
+            <a class="capability-card" href="./devices/">
+              <span>Inspect</span>
+              <strong>Devices &mdash; Hardware Check</strong>
+              <p>Verify cameras, robot specs, and URDF 3D model. Click joints to inspect name, type, axis, and range. UR5 Dashboard control included.</p>
+              <em>Devices &rarr;</em>
+            </a>
+            <a class="capability-card" href="./record/">
+              <span>Collect</span>
+              <strong>Record &mdash; Data Collection</strong>
+              <p>Teleoperate via leader arm while capturing camera feeds, joint states, and TCP pose per episode. Annotate SUCCESS/FAIL on completion.</p>
+              <em>Record &rarr;</em>
+            </a>
+            <a class="capability-card" href="./datatools/">
+              <span>Curate</span>
+              <strong>Edit Dataset &mdash; Quality Control</strong>
+              <p>7 tools: quality check, filter, upload/download, merge, delete episodes, change task instructions, and scatter plot analysis.</p>
+              <em>Data Tools &rarr;</em>
+            </a>
+            <a class="capability-card" href="./augment/">
+              <span>Augment</span>
+              <strong>Augmentation &mdash; Data Diversity</strong>
+              <p>Vision augmentation (lightness, noise, blur, jitter, disturbance) and language augmentation for task instructions.</p>
+              <em>Augmentation &rarr;</em>
+            </a>
+          </div>
+        </section>
+
+        <!-- ── UR5 Dashboard Control ── -->
+        <section class="home-section" id="dashboard">
+          <div class="home-section-head">
+            <div>
+              <h2>UR5 Dashboard Control</h2>
+              <p>Devices 페이지의 UR5 전용 Dashboard 패널. Power On &rarr; Brake Release 순서를 따라야 로봇이 동작 가능 상태가 됩니다.</p>
+            </div>
+          </div>
+          <table class="dash-table">
+            <thead>
+              <tr><th>Button</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Power On</td><td>로봇 전원 투입 &mdash; 전원이 들어오면 LED 상태 표시</td></tr>
+              <tr><td>Brake Release</td><td>브레이크 해제 &rarr; 관절 동작 가능 상태로 전환</td></tr>
+              <tr><td>Unlock P-Stop</td><td>보호 정지(Protective Stop) 해제 &mdash; 충돌 감지 후 복구 시 사용</td></tr>
+              <tr><td>Power Off</td><td>로봇 전원 차단 &mdash; 안전하게 종료</td></tr>
+            </tbody>
+          </table>
+          <div class="hero-quick-grid" style="margin-top:1rem;">
+            <article class="hero-quick-card">
+              <span>Joint Selection</span>
+              <strong>Single Click</strong>
+              <p>URDF 뷰어에서 관절 1개 선택. 이름, 타입, 축, 범위 정보가 표시됩니다.</p>
+            </article>
+            <article class="hero-quick-card">
+              <span>Multi Select</span>
+              <strong>Ctrl + Click</strong>
+              <p>여러 관절을 동시에 선택하여 비교. 선택된 관절들의 정보를 한눈에 확인.</p>
+            </article>
+            <article class="hero-quick-card">
+              <span>Range Select</span>
+              <strong>Shift + Click</strong>
+              <p>시작~끝 범위의 관절을 한 번에 선택. 연속된 관절 체인 확인에 유용.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ── Record Workflow ── -->
+        <section class="home-section" id="record">
+          <div class="home-section-head">
+            <div>
+              <h2>Record &mdash; Episode Collection</h2>
+              <p>텔레옵으로 UR5를 조작하며 에피소드 단위로 데이터를 수집합니다. 각 에피소드는 5개 Phase를 순환합니다.</p>
+            </div>
+          </div>
+          <div class="phase-strip">
+            <article class="phase-item">
+              <strong>WARMUP</strong>
+              <span>준비</span>
+            </article>
+            <article class="phase-item">
+              <strong>RECORDING</strong>
+              <span>수집</span>
+            </article>
+            <article class="phase-item">
+              <strong>SAVING</strong>
+              <span>저장</span>
+            </article>
+            <article class="phase-item">
+              <strong>RESET</strong>
+              <span>리셋</span>
+            </article>
+            <article class="phase-item">
+              <strong>ANNOTATE</strong>
+              <span>SUCCESS / FAIL</span>
+            </article>
+          </div>
+          <div class="hero-quick-grid" style="margin-top:1rem;">
+            <article class="hero-quick-card">
+              <span>Camera Layout</span>
+              <strong>Third + Wrist</strong>
+              <p>UR5: Third-person 메인 카메라 + Wrist 소형 뷰. 기타 로봇은 2&times;2 그리드.</p>
+            </article>
+            <article class="hero-quick-card">
+              <span>Center Panel</span>
+              <strong>URDF + Joint Graph</strong>
+              <p>3D URDF 뷰어와 관절 상태 실시간 그래프를 동시에 확인.</p>
+            </article>
+            <article class="hero-quick-card">
+              <span>Info Panel</span>
+              <strong>Timer &amp; Phase</strong>
+              <p>현재 Phase, 에피소드 번호, 남은 시간을 우측 패널에서 모니터링.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ── Data Format ── -->
+        <section class="home-section" id="data-format">
+          <div class="home-section-head">
+            <div>
+              <h2>Data Format &mdash; LeRobot v2</h2>
+              <p>수집된 데이터는 Parquet + MP4 구조로 저장됩니다. 프레임당 관절 상태, 액션, TCP 포즈, 카메라 참조를 포함합니다.</p>
+            </div>
+          </div>
+          <div class="data-tree">dataset/
+├── data/
+│   └── chunk-000/
+│       ├── episode_000000.parquet
+│       ├── episode_000001.parquet
+│       └── ...
+├── videos/
+│   └── chunk-000/
+│       ├── observation.images.cam_wrist/
+│       │   └── episode_000000.mp4
+│       └── observation.images.cam_third/
+│           └── episode_000000.mp4
+└── meta/
+    ├── info.json
+    ├── episodes.jsonl
+    ├── tasks.jsonl
+    ├── stats.json
+    ├── modality.json
+    └── episode_results.json</div>
+          <table class="dash-table" style="margin-top:1rem;">
+            <thead>
+              <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>observation.state</td><td>float32[7]</td><td>관절 위치 (6 arm + 1 gripper)</td></tr>
+              <tr><td>action</td><td>float32[7]</td><td>리더 관절 위치 (텔레옵 명령)</td></tr>
+              <tr><td>observation.eef_pose</td><td>float32[7]</td><td>TCP 포즈 [x,y,z,qx,qy,qz,qw]</td></tr>
+              <tr><td>observation.images.*</td><td>MP4 ref</td><td>카메라 영상은 별도 MP4로 저장</td></tr>
+              <tr><td>episode_index</td><td>int</td><td>에피소드 번호</td></tr>
+              <tr><td>frame_index</td><td>int</td><td>프레임 번호</td></tr>
+              <tr><td>timestamp</td><td>float</td><td>타임스탬프 (초)</td></tr>
+              <tr><td>task</td><td>string</td><td>태스크 지시문</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- ── Edit Dataset Tools ── -->
+        <section class="home-section" id="edit-tools">
+          <div class="home-section-head">
+            <div>
+              <h2>Edit Dataset &mdash; 7 Tools</h2>
+              <p>수집 후 데이터셋 품질 관리를 위한 7가지 도구. Quality Check &rarr; Delete &rarr; Filter &rarr; Merge 순서가 일반적입니다.</p>
+            </div>
+          </div>
+          <div class="tools-grid">
+            <article class="tool-card">
+              <strong>Quality Check</strong>
+              <p>데이터 유효성 검증 및 품질 점수 산출. 누락 프레임, 이상치, 카메라 동기화 확인.</p>
+            </article>
+            <article class="tool-card">
+              <strong>Filter Dataset</strong>
+              <p>전문가 선별 및 카메라별 필터링. 특정 조건에 맞는 에피소드만 추출.</p>
+            </article>
+            <article class="tool-card">
+              <strong>Upload &amp; Download</strong>
+              <p>HuggingFace Hub 업로드/다운로드. 팀 간 데이터셋 공유 및 버전 관리.</p>
+            </article>
+            <article class="tool-card">
+              <strong>Merge Dataset</strong>
+              <p>여러 세션에서 수집한 데이터셋을 하나로 병합. 인덱스 자동 재배열.</p>
+            </article>
+            <article class="tool-card">
+              <strong>Delete Episodes</strong>
+              <p>실패/불량 에피소드 삭제. annotation 결과(FAIL) 기반으로 빠르게 제거.</p>
+            </article>
+            <article class="tool-card">
+              <strong>Change Task Instruction</strong>
+              <p>태스크 지시문 일괄 수정. 오타 수정이나 더 구체적인 설명으로 변경.</p>
+            </article>
+            <article class="tool-card">
+              <strong>Scatter Plot</strong>
+              <p>관절 위치/속도 분포 시각화. 이상 에피소드를 시각적으로 탐색.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ── Data Augmentation ── -->
+        <section class="home-section" id="augmentation">
+          <div class="home-section-head">
+            <div>
+              <h2>Data Augmentation</h2>
+              <p>Vision과 Language 양쪽으로 데이터를 증강하여 학습 다양성을 확보합니다. Stream(실시간 미리보기)과 Batch(오프라인 일괄 적용) 모드 지원.</p>
+            </div>
+          </div>
+          <h3 style="color:#e9d5ff; font-size:0.9rem; margin:0 0 0.5rem;">Vision Augmentation</h3>
+          <div class="aug-grid">
+            <article class="aug-card">
+              <strong>Lightness</strong>
+              <span>&plusmn;100%</span>
+              <p>조명 변화 대응</p>
+            </article>
+            <article class="aug-card">
+              <strong>Gaussian Noise</strong>
+              <span>&sigma; 0 ~ 0.3</span>
+              <p>센서 노이즈 대응</p>
+            </article>
+            <article class="aug-card">
+              <strong>Salt &amp; Pepper</strong>
+              <span>0 ~ 20%</span>
+              <p>픽셀 결함 대응</p>
+            </article>
+            <article class="aug-card">
+              <strong>Motion Blur</strong>
+              <span>0 ~ 10px</span>
+              <p>모션 블러 대응</p>
+            </article>
+            <article class="aug-card">
+              <strong>Color Jitter</strong>
+              <span>Hue / Saturation</span>
+              <p>색상 변화 대응</p>
+            </article>
+            <article class="aug-card">
+              <strong>Disturbance</strong>
+              <span>on / off</span>
+              <p>가림(occlusion) 대응</p>
+            </article>
+          </div>
+          <h3 style="color:#e9d5ff; font-size:0.9rem; margin:1rem 0 0.5rem;">Language Augmentation</h3>
+          <div class="tools-grid">
+            <article class="tool-card">
+              <strong>Manual</strong>
+              <p>직접 지시문 변형 입력. 예: &ldquo;컵을 집어라&rdquo; &rarr; &ldquo;빨간 컵을 테이블에서 집어라&rdquo;. 에피소드별 랜덤 할당 가능.</p>
+            </article>
+            <article class="tool-card">
+              <strong>LLM (EXAONE)</strong>
+              <p>LLM으로 태스크 지시문 자동 생성. 다양한 표현을 자동으로 만들어 데이터 다양성 확보. (현재 비활성)</p>
+            </article>
+          </div>
+          <div class="hero-quick-grid" style="margin-top:1rem;">
+            <article class="hero-quick-card">
+              <span>Mode</span>
+              <strong>Stream</strong>
+              <p>실시간 카메라 피드에서 원본 vs 증강 비교 미리보기.</p>
+            </article>
+            <article class="hero-quick-card">
+              <span>Mode</span>
+              <strong>Batch</strong>
+              <p>저장된 데이터셋에 오프라인 일괄 적용. 증강 비율 설정 가능.</p>
+            </article>
+            <article class="hero-quick-card">
+              <span>Output</span>
+              <strong>{dataset}_aug_{ts}/</strong>
+              <p>증강된 데이터는 원본과 분리하여 별도 디렉터리에 저장.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ── End-to-End Workflow ── -->
+        <section class="home-section" id="workflow">
+          <div class="home-section-head">
+            <div>
+              <h2>End-to-End Workflow</h2>
+              <p>UR5 파이프라인의 5단계 &mdash; 로봇 선택부터 증강된 학습 데이터 확보까지.</p>
+            </div>
+          </div>
+          <div class="workflow-strip">
+            <article class="workflow-step">
+              <span>01</span>
+              <strong>Select &amp; Connect</strong>
+              <p>Home에서 UR5 선택, ROS 연결 확인, Dashboard에서 Power On &amp; Brake Release.</p>
+            </article>
+            <article class="workflow-step">
+              <span>02</span>
+              <strong>Verify Hardware</strong>
+              <p>Devices에서 카메라, 관절 구조, URDF 3D 모델 확인. 관절 클릭으로 스펙 검증.</p>
+            </article>
+            <article class="workflow-step">
+              <span>03</span>
+              <strong>Collect Data</strong>
+              <p>Record에서 텔레옵 수집. WARMUP &rarr; RECORDING &rarr; SAVING &rarr; RESET &rarr; ANNOTATE 순환.</p>
+            </article>
+            <article class="workflow-step">
+              <span>04</span>
+              <strong>Curate Dataset</strong>
+              <p>Edit Dataset에서 Quality Check, 불량 에피소드 삭제, 필터링, 병합으로 데이터 정리.</p>
+            </article>
+            <article class="workflow-step">
+              <span>05</span>
+              <strong>Augment</strong>
+              <p>Vision/Language 증강으로 학습 데이터 다양성 확보. Batch 모드로 일괄 적용.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ── System Architecture ── -->
+        <section class="home-section" id="architecture">
+          <div class="home-section-head">
+            <div>
+              <h2>System Architecture</h2>
+              <p>두 개의 백엔드가 병렬로 동작합니다 &mdash; PRISM ROS 2 Server (데이터 수집/학습/추론)와 UR5 FastAPI Server (로봇 직접 제어/대시보드).</p>
+            </div>
+          </div>
+          <div class="arch-diagram">┌──────────────────────────────────────────────────────────────────┐
+│                     React UI (:3000)                              │
+│                   physical_ai_manager                             │
+│  Home │ Record │ Devices │ Augment │ Edit │ Visualize │ ...      │
+└────────┬────────────────────────────────┬────────────────────────┘
+         │ WebSocket (rosbridge :9090)    │ HTTP / WS (:8001)
+         ▼                                ▼
+┌──────────────────────┐     ┌──────────────────────┐
+│ PRISM ROS 2 Server   │     │ UR5 FastAPI Server   │
+│ physical_ai_server   │     │ ur5_fastapi_server   │
+│ - 데이터 수집/학습    │     │ - 조인트 제어        │
+│ - 카메라/토픽 관리    │     │ - 대시보드 관리      │
+│ - 추론 실행          │     │ - 그리퍼 제어        │
+└──────┬───────────────┘     └────┬──────┬──────────┘
+       │                          │      │
+       ▼                          ▼      ▼
+┌──────────────┐            ur_rtde   Dashboard
+│ ROS 2 Topics │            (RTDE     (TCP
+│ /joint_states│            :30004)   :29999)
+│ /camera/*    │                │      │
+│ /tf          │                ▼      ▼
+└──────┬───────┘          ┌──────────────────────┐
+       │                  │    UR5 Controller     │
+       └──────────────────│   192.168.100.210     │
+                          └──────────────────────┘
+                                    │
+                          ┌─────────┼─────────┐
+                          ▼         ▼         ▼
+                     SpaceMouse  RealSense  Robotiq
+                     (Teleop)   D405/D435  2F-85</div>
+          <div class="hero-quick-grid" style="margin-top:1rem;">
+            <article class="hero-quick-card">
+              <span>Backend 1</span>
+              <strong>PRISM ROS 2</strong>
+              <p>데이터 수집, 학습, 추론, 카메라 관리. Docker + ROS 2 Jazzy 기반.</p>
+            </article>
+            <article class="hero-quick-card">
+              <span>Backend 2</span>
+              <strong>UR5 FastAPI</strong>
+              <p>로봇 직접 제어, 대시보드, 그리퍼. ROS 없이 독립 동작 가능. ur_rtde 기반.</p>
+            </article>
+            <article class="hero-quick-card">
+              <span>Frontend</span>
+              <strong>React UI :3000</strong>
+              <p>rosbridge WebSocket + FastAPI HTTP/WS 동시 접속. nginx 서빙.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ── ROS 2 Communication ── -->
+        <section class="home-section" id="ros2">
+          <div class="home-section-head">
+            <div>
+              <h2>ROS 2 Communication Structure</h2>
+              <p>physical_ai_server 노드를 중심으로 한 전체 ROS 2 토픽/서비스 통신 구조. UR5 드라이버, 카메라, 텔레옵 노드와 연동합니다.</p>
+            </div>
+          </div>
+          <div class="arch-diagram">┌─────────────────────────────────────────────────────────────────────────────┐
+│                          ROS 2 DDS Network                                  │
+│                                                                             │
+│  ┌─────────────────┐  ┌──────────────────┐  ┌──────────────────────────┐   │
+│  │  ur_robot_driver │  │ realsense2_camera│  │  SpaceMouse Teleop       │   │
+│  │                  │  │  (cam_wrist)     │  │  (좌표 변환 스크립트)     │   │
+│  │  PUB:            │  │  (cam_third)     │  │                          │   │
+│  │  /joint_states   │  │                  │  │  PUB:                    │   │
+│  │  /tf, /tf_static │  │  PUB:            │  │  /forward_velocity_      │   │
+│  └──────┬───────────┘  │  /camera/cam_*/  │  │   controller/commands    │   │
+│         │              │   color/image_*  │  └────────────┬─────────────┘   │
+│         │              │   depth/image_*  │               │                 │
+│         │              │   */camera_info  │               │                 │
+│         │              └────────┬─────────┘               │                 │
+│         │                       │                         │                 │
+│         ▼                       ▼                         ▼                 │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │  physical_ai_server  (Main PRISM Node)                               │   │
+│  │                                                                      │   │
+│  │  SUB: /joint_states (follower + leader)                              │   │
+│  │  SUB: /camera/cam_wrist/color/image_rect_raw                        │   │
+│  │  SUB: /camera/cam_wrist/depth/image_rect_raw                        │   │
+│  │  SUB: /camera/cam_third/color/image_raw                             │   │
+│  │  SUB: /camera/cam_third/depth/image_rect_raw                        │   │
+│  │  SUB: /camera/*/camera_info                                         │   │
+│  │  SUB: /leader/joystick_controller/tact_trigger                      │   │
+│  │                                                                      │   │
+│  │  PUB: /task/status  (TaskStatus)                                    │   │
+│  │  PUB: heartbeat  (Empty)                                            │   │
+│  │  PUB: /dataset/augmentation_status                                  │   │
+│  │  PUB: /dataset/merge_status                                         │   │
+│  │                                                                      │   │
+│  │  SRV: /image/get_available_list                                     │   │
+│  │  SRV: /browse_file, /dataset/edit, /dataset/get_info                │   │
+│  │  SRV: /dataset/get_parquet_data, /dataset/get_sample_image          │   │
+│  │  SRV: /dataset/augment                                              │   │
+│  │  SRV: /camera/get_config, /camera/enumerate, /camera/control        │   │
+│  │  SRV: /camera/calibration/control                                   │   │
+│  │  CLI: rosbag_recorder/send_command                                  │   │
+│  │                                                                      │   │
+│  │  communicator.py → data_converter.py → data_manager.py              │   │
+│  │  (토픽 구독)        (JointState→텐서)    (LeRobot 저장)              │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│         │                                                                   │
+│  ┌──────┴────────────────────┐  ┌──────────────────────────────────────┐   │
+│  │  rosbridge_websocket      │  │  web_video_server                    │   │
+│  │  WebSocket :9090          │  │  HTTP :8081                          │   │
+│  │  (토픽/서비스 → JSON)     │  │  (카메라 MJPEG 스트리밍)             │   │
+│  └──────────┬────────────────┘  └──────────────┬───────────────────────┘   │
+│             │                                   │                           │
+│  ┌──────────┴───────────────────────────────────┴───────────────────────┐   │
+│  │  service_bag_recorder        depth_colormap_nodes (wrist/third/top)  │   │
+│  │  (rosbag2 녹화 서비스)       (depth → 컬러맵 변환)                   │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                    │                           │
+                    ▼                           ▼
+          React UI (:3000)             UR5 FastAPI (:8001)
+          rosbridge WS 접속            ur_rtde 직접 TCP/IP</div>
+
+          <h3 style="color:#e9d5ff; font-size:0.9rem; margin:1rem 0 0.5rem;">Bringup Launch Nodes</h3>
+          <table class="dash-table">
+            <thead>
+              <tr><th>Node</th><th>Package</th><th>Role</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>physical_ai_server</td><td>physical_ai_server</td><td>메인 PRISM 노드 &mdash; 토픽 구독, 데이터 수집/학습/추론, 서비스 제공</td></tr>
+              <tr><td>rosbridge_websocket</td><td>rosbridge_server</td><td>ROS 2 &harr; WebSocket JSON 브릿지 (:9090). React UI 연결.</td></tr>
+              <tr><td>service_bag_recorder</td><td>rosbag_recorder</td><td>서비스 기반 rosbag2 녹화. Record 페이지에서 에피소드 단위 제어.</td></tr>
+              <tr><td>web_video_server</td><td>web_video_server</td><td>HTTP 카메라 MJPEG 스트리밍 (:8081). Devices/Record 페이지 카메라 뷰.</td></tr>
+              <tr><td>cam_*_depth_colormap</td><td>physical_ai_server</td><td>Depth 이미지 &rarr; 컬러맵 변환 (wrist / third / top)</td></tr>
+            </tbody>
+          </table>
+
+          <h3 style="color:#e9d5ff; font-size:0.9rem; margin:1rem 0 0.5rem;">Key Topics (UR5)</h3>
+          <table class="dash-table">
+            <thead>
+              <tr><th>Topic</th><th>Type</th><th>Publisher</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>/joint_states</td><td>JointState</td><td>ur_robot_driver</td><td>6 joints (+ finger_joint). 순서 주의: 이름 기반 매핑.</td></tr>
+              <tr><td>/camera/cam_wrist/color/image_rect_raw</td><td>Image</td><td>realsense (D405)</td><td>Wrist 카메라 RGB</td></tr>
+              <tr><td>/camera/cam_third/color/image_raw</td><td>Image</td><td>realsense (D435)</td><td>Third-person 카메라 RGB</td></tr>
+              <tr><td>/camera/cam_*/depth/image_rect_raw</td><td>Image</td><td>realsense</td><td>Depth raw (uint16)</td></tr>
+              <tr><td>/forward_velocity_controller/commands</td><td>Float64MultiArray</td><td>SpaceMouse</td><td>Velocity 텔레옵 명령 (6-DoF)</td></tr>
+              <tr><td>/tf, /tf_static</td><td>TF</td><td>ur_robot_driver</td><td>좌표계 변환 (캘리브레이션, FK)</td></tr>
+              <tr><td>/task/status</td><td>TaskStatus</td><td>physical_ai_server</td><td>Record 상태 (phase, episode 번호)</td></tr>
+              <tr><td>heartbeat</td><td>Empty</td><td>physical_ai_server</td><td>ROS 연결 상태 확인용 (React UI)</td></tr>
+            </tbody>
+          </table>
+
+          <h3 style="color:#e9d5ff; font-size:0.9rem; margin:1rem 0 0.5rem;">ROS 2 Services</h3>
+          <div class="config-grid">
+            <article class="config-card">
+              <span>Dataset</span>
+              <strong>/dataset/*</strong>
+              <p>edit, get_info, get_parquet_data, get_sample_image, augment &mdash; 데이터셋 CRUD 및 증강.</p>
+            </article>
+            <article class="config-card">
+              <span>Camera</span>
+              <strong>/camera/*</strong>
+              <p>get_config, enumerate, control, calibration/control &mdash; 카메라 설정/탐색/캘리브레이션.</p>
+            </article>
+            <article class="config-card">
+              <span>Image</span>
+              <strong>/image/get_available_list</strong>
+              <p>현재 활성 카메라 토픽 목록 반환. Devices 페이지에서 카메라 상태 표시.</p>
+            </article>
+            <article class="config-card">
+              <span>File</span>
+              <strong>/browse_file</strong>
+              <p>파일/디렉토리 탐색. 데이터셋 경로 선택 UI에서 사용.</p>
+            </article>
+            <article class="config-card">
+              <span>Recording</span>
+              <strong>rosbag_recorder/send_command</strong>
+              <p>PREPARE → START → STOP 명령. 에피소드 단위 rosbag2 녹화 제어.</p>
+            </article>
+            <article class="config-card">
+              <span>Data Flow</span>
+              <strong>communicator &rarr; converter &rarr; manager</strong>
+              <p>토픽 구독 → JointState/Image 텐서 변환 → LeRobot v2 Parquet + MP4 저장.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ── Setup & Execution ── -->
+        <section class="home-section" id="setup">
+          <div class="home-section-head">
+            <div>
+              <h2>Setup &amp; Execution Order</h2>
+              <p>데이터 수집(Record)까지의 전체 실행 순서입니다. 각 단계를 순서대로 실행하세요.</p>
+            </div>
+          </div>
+          <div class="step-list">
+            <article class="step-item">
+              <span class="step-num">1</span>
+              <div class="step-body">
+                <strong>UR ROS 드라이버 실행</strong>
+                <p><code>ros2 launch ur_robot_driver ur_control.launch.py ur_type:=ur5 robot_ip:=192.168.100.210</code><br/>
+                드라이버 연결 후 <code>/joint_states</code>, <code>/tf</code> 토픽 퍼블리시 시작.</p>
+              </div>
+            </article>
+            <article class="step-item">
+              <span class="step-num">2</span>
+              <div class="step-body">
+                <strong>UR 로봇 프로그램 실행</strong>
+                <p>Teach Pendant에서 Remote Control 모드 확인 &rarr; External Control URCap 프로그램 로드 &rarr; Play.<br/>
+                또는 PRISM Devices 페이지의 Dashboard에서 <code>Power On</code> &rarr; <code>Brake Release</code>.</p>
+              </div>
+            </article>
+            <article class="step-item">
+              <span class="step-num">3</span>
+              <div class="step-body">
+                <strong>Controller Switching (Teleop 시)</strong>
+                <p><code>ros2 control switch_controllers --deactivate scaled_joint_trajectory_controller --activate forward_velocity_controller</code><br/>
+                추론(Inference) 시에는 기본 <code>scaled_joint_trajectory_controller</code> 사용.</p>
+              </div>
+            </article>
+            <article class="step-item">
+              <span class="step-num">4</span>
+              <div class="step-body">
+                <strong>SpaceMouse Teleop 실행</strong>
+                <p>SpaceMouse로 UR5를 실시간 조작. <code>/forward_velocity_controller/commands</code>로 velocity 명령 publish.<br/>
+                향후 리더 디바이스: PIKA Sense / Gripper / Station, PiPER 연동 예정.</p>
+              </div>
+            </article>
+            <article class="step-item">
+              <span class="step-num">5</span>
+              <div class="step-body">
+                <strong>RealSense Camera 실행</strong>
+                <p>Wrist 카메라 (D405): <code>ros2 launch realsense2_camera rs_launch.py camera_name:=cam_wrist camera_namespace:=camera</code><br/>
+                Third 카메라 (D435): <code>ros2 launch realsense2_camera rs_launch.py camera_name:=cam_third camera_namespace:=camera</code><br/>
+                <code>/compressed</code> 토픽 없음 &mdash; <code>image_transport republish</code> 노드 필요.</p>
+              </div>
+            </article>
+            <article class="step-item">
+              <span class="step-num">6</span>
+              <div class="step-body">
+                <strong>PRISM 실행 (데이터 수집)</strong>
+                <p>터미널 1: <code>ros2 launch physical_ai_server physical_ai_server.launch.py</code><br/>
+                터미널 2: <code>uvicorn ur5_server.main:app --host 0.0.0.0 --port 8001</code><br/>
+                브라우저에서 <code>http://&lt;PC IP&gt;:3000</code> 접속 &rarr; UR5 선택 &rarr; Record</p>
+              </div>
+            </article>
+          </div>
+          <div class="tools-grid" style="margin-top:1rem;">
+            <article class="tool-card">
+              <strong>Docker 빌드 &amp; 실행</strong>
+              <p><code>docker compose up -d</code> &mdash; prism_manager (nginx :3000)와 prism_server (ROS 2 백엔드, network_mode: host) 2개 컨테이너.<br/>
+              컨테이너 내부: <code>colcon build --packages-select physical_ai_server --symlink-install</code></p>
+            </article>
+            <article class="tool-card">
+              <strong>FastAPI 단독 실행</strong>
+              <p><code>pip install -e .</code> 후 <code>uvicorn ur5_server.main:app --host 0.0.0.0 --port 8001</code><br/>
+              Docker/ROS 2 없이도 동작. 로봇 연결 실패 시 health에서 <code>connected: false</code> 응답.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ── FastAPI API Endpoints ── -->
+        <section class="home-section" id="api">
+          <div class="home-section-head">
+            <div>
+              <h2>UR5 FastAPI API Endpoints</h2>
+              <p>ur_rtde를 통해 UR5를 직접 제어하는 FastAPI 서버 (:8001). 조인트, 그리퍼, 대시보드, 카메라 탐색 등.</p>
+            </div>
+          </div>
+          <table class="dash-table">
+            <thead>
+              <tr><th>Category</th><th>Endpoint</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Joint State</td><td>GET /api/v1/joints/state</td><td>현재 관절 위치, 속도, 전류, TCP 포즈</td></tr>
+              <tr><td>Joint State</td><td>WS /api/v1/ws/joint_state</td><td>30Hz 실시간 스트리밍 (양방향 velocity 명령)</td></tr>
+              <tr><td>Joint Control</td><td>POST /api/v1/joints/move</td><td>moveJ &mdash; 목표 위치 이동</td></tr>
+              <tr><td>Joint Control</td><td>POST /api/v1/joints/move_to_initial</td><td>초기 자세로 이동</td></tr>
+              <tr><td>Joint Control</td><td>POST /api/v1/joints/velocity</td><td>speedJ &mdash; 속도 제어 (500ms watchdog)</td></tr>
+              <tr><td>Joint Control</td><td>POST /api/v1/joints/stop</td><td>즉시 정지</td></tr>
+              <tr><td>TCP</td><td>POST /api/v1/tcp/move</td><td>moveL &mdash; 카르테시안 이동</td></tr>
+              <tr><td>Dashboard</td><td>POST /api/v1/dashboard/{action}</td><td>power_on, power_off, brake_release, unlock_protective_stop, play, stop</td></tr>
+              <tr><td>Robot</td><td>GET /api/v1/robot/status</td><td>연결 상태, 모드, 온도, 속도 스케일링</td></tr>
+              <tr><td>Robot</td><td>GET /api/v1/health</td><td>헬스체크 (rtde_connected, dashboard_connected)</td></tr>
+              <tr><td>Gripper</td><td>POST /api/v1/gripper/open</td><td>Robotiq 2F-85 열기</td></tr>
+              <tr><td>Gripper</td><td>POST /api/v1/gripper/close</td><td>Robotiq 2F-85 닫기</td></tr>
+              <tr><td>Gripper</td><td>POST /api/v1/gripper/set_position</td><td>위치 지정 (0.0 open ~ 0.8 closed)</td></tr>
+              <tr><td>Camera</td><td>GET /api/v1/camera/enumerate</td><td>연결된 RealSense 카메라 목록</td></tr>
+              <tr><td>Catalog</td><td>GET /api/v1/robot-types</td><td>설정된 로봇 타입 목록</td></tr>
+              <tr><td>Files</td><td>POST /api/v1/files/browse</td><td>파일/디렉토리 탐색</td></tr>
+              <tr><td>HuggingFace</td><td>POST /api/v1/huggingface/register-user</td><td>HF 토큰 검증 및 저장</td></tr>
+            </tbody>
+          </table>
+          <div class="hero-quick-grid" style="margin-top:1rem;">
+            <article class="hero-quick-card">
+              <span>Service Init</span>
+              <strong>9 Services</strong>
+              <p>CatalogService &rarr; HFUser &rarr; CameraInventory &rarr; FileBrowse &rarr; RTDE &rarr; Dashboard &rarr; Safety &rarr; Gripper &rarr; StateBroadcaster</p>
+            </article>
+            <article class="hero-quick-card">
+              <span>Streaming</span>
+              <strong>125Hz &rarr; 30Hz</strong>
+              <p>StateBroadcaster가 125Hz로 폴링, 30Hz로 WebSocket 브로드캐스트. 실시간 관절 모니터링.</p>
+            </article>
+            <article class="hero-quick-card">
+              <span>Safety</span>
+              <strong>Max Speed Limits</strong>
+              <p>Joint: 1.05 rad/s, TCP: 0.25 m/s. SafetyMonitor가 모션 전 안전 검증 수행.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ── Site Configuration ── -->
+        <section class="home-section" id="site-config">
+          <div class="home-section-head">
+            <div>
+              <h2>Site Configuration &mdash; LG전자 생기원</h2>
+              <p>현장 환경 설정 및 주의사항. 네트워크, 카메라, 컨트롤러, 조인트 매핑 정보.</p>
+            </div>
+          </div>
+          <div class="config-grid">
+            <article class="config-card">
+              <span>Network</span>
+              <strong>192.168.100.210</strong>
+              <p>UR5 컨트롤러 IP. RTDE :30004, Dashboard :29999. ROS_DOMAIN_ID=30.</p>
+            </article>
+            <article class="config-card">
+              <span>Robot</span>
+              <strong>ur_type: ur5</strong>
+              <p>ur5e가 아님. 기본 컨트롤러: scaled_joint_trajectory_controller. SpaceMouse: forward_velocity_controller.</p>
+            </article>
+            <article class="config-card">
+              <span>Camera</span>
+              <strong>RealSense D405 + D435</strong>
+              <p>Wrist (D405) + Third-person (D435). 현재 PC USB 직접 연결. camera_name 파라미터 필수.</p>
+            </article>
+            <article class="config-card">
+              <span>Gripper</span>
+              <strong>Robotiq 2F-85</strong>
+              <p>finger_joint이 /joint_states에 없을 수 있음 &mdash; 6DoF로 동작 (missing joint skip).</p>
+            </article>
+            <article class="config-card">
+              <span>Joint States</span>
+              <strong>순서 주의</strong>
+              <p>shoulder_lift_joint이 먼저, shoulder_pan_joint이 마지막. config의 joint_order로 이름 기반 매핑.</p>
+            </article>
+            <article class="config-card">
+              <span>Teleop</span>
+              <strong>SpaceMouse (Velocity)</strong>
+              <p>자체 좌표 변환 스크립트 사용. velocity 기반 제어. 향후 position 기반 전환 검토.</p>
+            </article>
+            <article class="config-card">
+              <span>Leader (예정)</span>
+              <strong>PIKA &amp; PiPER</strong>
+              <p>PIKA Sense/Gripper/Station (6D pose tracker) + PiPER (6-DoF 리더 암). leader_bridge_node.py로 통합.</p>
+            </article>
+            <article class="config-card">
+              <span>Requirements</span>
+              <strong>Ubuntu 24.04 + ROS 2 Jazzy</strong>
+              <p>Python 3.10+, Node.js 18+, NVIDIA GPU + nvidia-docker2. FastAPI만 단독 시 Docker 불필요.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ── Troubleshooting ── -->
+        <section class="home-section" id="troubleshooting">
+          <div class="home-section-head">
+            <div>
+              <h2>Troubleshooting</h2>
+              <p>현장에서 자주 발생하는 문제와 해결 방법.</p>
+            </div>
+          </div>
+          <div class="tools-grid">
+            <article class="tool-card">
+              <strong>카메라가 안 보임</strong>
+              <p><code>ros2 topic list | grep camera</code>로 토픽 확인. config의 camera_topic_list와 네임스페이스 일치 여부 확인. web_video_server 실행 상태 점검.</p>
+            </article>
+            <article class="tool-card">
+              <strong>로봇이 안 움직임</strong>
+              <p><code>ros2 control list_controllers</code>로 활성 컨트롤러 확인. Teleop 시 forward_velocity_controller 활성화 필수. Teach Pendant에서 프로그램 실행 여부 점검.</p>
+            </article>
+            <article class="tool-card">
+              <strong>PRISM UI 접속 안 됨</strong>
+              <p><code>docker ps</code>로 컨테이너 확인. <code>curl localhost:3000</code> (프론트엔드), <code>curl localhost:9090</code> (rosbridge) 점검. 방화벽 확인.</p>
+            </article>
+            <article class="tool-card">
+              <strong>ROS_DOMAIN_ID 불일치</strong>
+              <p>Docker compose에서 ROS_DOMAIN_ID=30 설정. 현장 PC에서 <code>echo $ROS_DOMAIN_ID</code> 확인 후 동일하게 맞춰야 통신 가능.</p>
+            </article>
+            <article class="tool-card">
+              <strong>finger_joint 차원 불일치</strong>
+              <p>현장 /joint_states에 finger_joint 없으면 6차원 텐서 생성. config joint_order는 7개 포함. data_converter가 skip하므로 6DoF 동작하나 학습/추론 시 차원 확인 필요.</p>
+            </article>
+            <article class="tool-card">
+              <strong>컨트롤러 전환 누락</strong>
+              <p>Teleop 전 forward_velocity_controller 활성화 잊으면 SpaceMouse 무반응. 추론 시 scaled_joint_trajectory_controller로 되돌려야 함.</p>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="container footer">
+      <span>PRISM Screen &mdash; UR5 Mode</span>
+      <a href="#overview">Top</a>
+    </footer>
+
+    <script src="../assets/js/page-data.js"></script>
+    <script src="../assets/js/page-enrichment.js"></script>
+    <script>
+      const guideOrder = [
+        ['Start', ['home', 'devices']],
+        ['Operation', ['record']],
+        ['Data Tools', ['datatools', 'visualize', 'kinematics']],
+      ];
+
+      const sidebarNav = document.getElementById('sidebarNav');
+      const screenSearch = document.getElementById('screenSearch');
+
+      function getFilteredGroups(query = '') {
+        const q = query.trim().toLowerCase();
+        return guideOrder
+          .map(([group, keys]) => {
+            const items = keys
+              .map((key) => ({ key, doc: window.PAGE_DOCS[key] }))
+              .filter(({ doc }) => {
+                const haystack = [
+                  doc.title,
+                  doc.subtitle,
+                  doc.purpose,
+                  ...(doc.features || []),
+                  ...(doc.userFlow || []),
+                ].join(' ').toLowerCase();
+                return !q || haystack.includes(q);
+              });
+            return [group, items];
+          })
+          .filter(([, items]) => items.length > 0);
+      }
+
+      function renderSidebar(groups) {
+        sidebarNav.innerHTML = groups.map(([group, items]) => `
+          <section class="sidebar-section">
+            <span class="sidebar-label">${group}</span>
+            <div class="sidebar-list">
+              ${items.map(({ key, doc }) => `
+                <a class="sidebar-link" href="./${key}/">
+                  <div>
+                    <strong>${doc.title}</strong>
+                    <span>${doc.subtitle}</span>
+                  </div>
+                  <em>Open</em>
+                </a>
+              `).join('')}
+            </div>
+          </section>
+        `).join('');
+      }
+
+      function renderAll(query = '') {
+        const groups = getFilteredGroups(query);
+        renderSidebar(groups);
+      }
+
+      screenSearch.addEventListener('input', (event) => renderAll(event.target.value));
+      renderAll();
+    </script>
+  </body>
+</html>

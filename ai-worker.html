@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PRISM | AI Worker Mode</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./assets/css/page.css" />
+    <style>
+      .topbar-home {
+        width: min(1180px, calc(100% - 2rem));
+      }
+      .docs-layout {
+        display: grid;
+        grid-template-columns: 270px minmax(0, 1fr);
+        gap: 1rem;
+        align-items: start;
+        padding: 1.2rem 0 2rem;
+      }
+      .docs-sidebar {
+        position: sticky;
+        top: 5.2rem;
+        max-height: calc(100vh - 6.4rem);
+        overflow-y: auto;
+        border-radius: 24px;
+        padding: 1rem;
+        background: rgba(18, 18, 26, 0.78);
+        border: 1px solid rgba(168, 85, 247, 0.16);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.18), 0 0 28px rgba(168, 85, 247, 0.08);
+      }
+      .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .sidebar-logo img {
+        height: 28px;
+        width: auto;
+      }
+      .sidebar-logo strong {
+        display: block;
+        color: #f8fbff;
+        font-size: 0.96rem;
+      }
+      .sidebar-logo span {
+        display: block;
+        margin-top: 0.12rem;
+        color: var(--nexus-text-muted);
+        font-size: 0.74rem;
+      }
+      .sidebar-search {
+        width: 100%;
+        border-radius: 14px;
+        border: 1px solid rgba(168, 85, 247, 0.18);
+        background: rgba(12, 13, 20, 0.9);
+        color: var(--nexus-text-primary);
+        padding: 0.82rem 0.9rem;
+        font: inherit;
+      }
+      .sidebar-search:focus {
+        outline: none;
+        border-color: rgba(168, 85, 247, 0.45);
+        box-shadow: 0 0 18px rgba(168, 85, 247, 0.16);
+      }
+      .sidebar-section {
+        margin-top: 1rem;
+      }
+      .sidebar-label {
+        display: block;
+        margin-bottom: 0.55rem;
+        color: var(--nexus-text-muted);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+      .sidebar-list {
+        display: grid;
+        gap: 0.34rem;
+      }
+      .sidebar-link {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.55rem;
+        align-items: center;
+        padding: 0.78rem 0.82rem;
+        border-radius: 14px;
+        text-decoration: none;
+        color: inherit;
+        border: 1px solid transparent;
+        transition: all 0.22s ease;
+      }
+      .sidebar-link:hover {
+        border-color: rgba(168, 85, 247, 0.2);
+        background: rgba(255,255,255,0.04);
+        transform: translateX(2px);
+      }
+      .sidebar-link strong {
+        display: block;
+        color: #eef4ff;
+        font-size: 0.86rem;
+      }
+      .sidebar-link span {
+        display: block;
+        margin-top: 0.12rem;
+        color: var(--nexus-text-secondary);
+        font-size: 0.75rem;
+        line-height: 1.45;
+      }
+      .sidebar-link em {
+        color: var(--nexus-text-muted);
+        font-style: normal;
+        font-size: 0.78rem;
+      }
+      .home-main {
+        display: grid;
+        gap: 1rem;
+      }
+      .home-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 1.5rem;
+        border-radius: 28px;
+      }
+      .home-hero::before {
+        content: '';
+        position: absolute;
+        inset: auto -18% -34% auto;
+        width: 420px;
+        height: 420px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(236, 72, 153, 0.18) 0%, transparent 68%);
+        pointer-events: none;
+      }
+      .home-hero::after {
+        content: '';
+        position: absolute;
+        inset: -26% auto auto -12%;
+        width: 360px;
+        height: 360px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(236, 72, 153, 0.14) 0%, transparent 70%);
+        pointer-events: none;
+      }
+      .home-hero-top {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+      }
+      .home-hero-copy {
+        width: 100%;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+      .home-hero-copy p {
+        margin: 0.7rem 0 0;
+        max-width: 720px;
+        color: var(--nexus-text-secondary);
+        line-height: 1.7;
+        font-size: 1rem;
+      }
+      .home-hero-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.42rem 0.8rem;
+        border-radius: 999px;
+        border: 1px solid rgba(236, 72, 153, 0.22);
+        background: rgba(236, 72, 153, 0.1);
+        color: #fda4af;
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .coming-soon {
+        margin-top: 1rem;
+        padding: 3rem 1.5rem;
+        border-radius: 24px;
+        background: rgba(18, 18, 26, 0.7);
+        border: 1px solid rgba(236, 72, 153, 0.14);
+        backdrop-filter: blur(16px);
+        text-align: center;
+      }
+      .coming-soon-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.42rem 0.85rem;
+        border-radius: 999px;
+        border: 1px solid rgba(236, 72, 153, 0.3);
+        background: rgba(236, 72, 153, 0.12);
+        color: #fda4af;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .coming-soon h2 {
+        margin: 1.2rem 0 0;
+        color: #f8fbff;
+        font-size: 1.3rem;
+        letter-spacing: -0.03em;
+      }
+      .coming-soon p {
+        margin: 0.5rem 0 0;
+        color: var(--nexus-text-secondary);
+        font-size: 0.92rem;
+        line-height: 1.65;
+        max-width: 480px;
+        margin-inline: auto;
+      }
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-top: 1.5rem;
+        padding: 0.6rem 1.1rem;
+        border-radius: 999px;
+        text-decoration: none;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #eef4ff;
+        border: 1px solid rgba(236, 72, 153, 0.24);
+        background: rgba(18, 18, 26, 0.7);
+        transition: border-color 0.18s ease, background 0.18s ease;
+      }
+      .back-link:hover {
+        border-color: rgba(236, 72, 153, 0.45);
+        background: rgba(236, 72, 153, 0.12);
+      }
+      @media (max-width: 1100px) {
+        .docs-layout {
+          grid-template-columns: 1fr;
+        }
+        .docs-sidebar {
+          position: static;
+          max-height: none;
+          overflow-y: visible;
+        }
+      }
+      @media (max-width: 860px) {
+        .home-hero-top {
+          flex-direction: column;
+          align-items: center;
+        }
+        .home-hero {
+          padding: 1.1rem;
+          border-radius: 20px;
+        }
+      }
+      @media (max-width: 480px) {
+        .docs-layout {
+          padding: 0.8rem 0 1.2rem;
+        }
+        .docs-sidebar {
+          border-radius: 18px;
+          padding: 0.8rem;
+        }
+        .home-hero {
+          padding: 0.9rem;
+          border-radius: 16px;
+        }
+        .coming-soon {
+          padding: 2rem 1rem;
+          border-radius: 16px;
+        }
+        .sidebar-link {
+          padding: 0.65rem 0.7rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-layer">
+      <div class="bg-orb a"></div>
+      <div class="bg-orb b"></div>
+      <div class="bg-orb c"></div>
+      <div class="bg-grid"></div>
+      <div class="bg-noise"></div>
+    </div>
+
+    <header class="container topbar topbar-home">
+      <a class="brand" href="./index.html" aria-label="PRISM home">
+        <img src="./assets/images/logo_nexus.png" alt="PRISM" />
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="./index.html">Mode Select</a>
+      </nav>
+    </header>
+
+    <main class="container docs-layout">
+      <aside class="docs-sidebar glass-strong">
+        <div class="sidebar-logo">
+          <img src="./assets/images/logo_nexus.png" alt="PRISM" />
+          <div>
+            <strong>PRISM Manuals</strong>
+            <span>AI Worker Mode</span>
+          </div>
+        </div>
+        <input class="sidebar-search" id="screenSearch" type="search" placeholder="Search manuals" />
+        <div id="sidebarNav"></div>
+      </aside>
+
+      <div class="home-main">
+        <section class="home-hero hero-premium glass-strong nexus-glow">
+          <div class="home-hero-top">
+            <div class="home-hero-copy">
+              <div class="home-hero-kicker">
+                <span class="version-dot-wrap"><span class="version-dot ping"></span><span class="version-dot"></span></span>
+                <span>AI Worker</span>
+              </div>
+              <div class="title-stack" style="margin-top:0.85rem;">
+                <span class="prism-glow">PRISM</span>
+                <span class="prism">PRISM</span>
+                <span class="line">AI Worker</span>
+                <span class="line italic">Autonomous Workflow</span>
+              </div>
+              <p>
+                Intelligent task execution and monitoring &mdash;
+                let AI workers handle complex operations with built-in safety controls.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="coming-soon">
+          <span class="coming-soon-badge">Coming Soon</span>
+          <h2>AI Worker Mode is Under Development</h2>
+          <p>
+            The AI Worker autonomous execution pipeline, monitoring dashboard,
+            and control interfaces are currently being built. Check back soon for updates.
+          </p>
+          <a class="back-link" href="./index.html">&larr; Back to Mode Select</a>
+        </section>
+      </div>
+    </main>
+
+    <footer class="container footer">
+      <span>PRISM Screen &mdash; AI Worker Mode</span>
+      <a href="./index.html">Mode Select</a>
+    </footer>
+
+    <script src="./assets/js/page-data.js"></script>
+    <script src="./assets/js/page-enrichment.js"></script>
+    <script>
+      const guideOrder = [
+        ['Start', ['home', 'connect', 'devices']],
+        ['Operation', ['record', 'training', 'inference', 'steering']],
+        ['Data Tools', ['datatools', 'augment', 'visualize', 'kinematics']],
+        ['Annotation', ['sam2', 'detection', 'tt', 'embedding']],
+        ['Online', ['rtsam', 'rain', 'foundationpose', 'calib', 'pri4r']],
+      ];
+
+      const sidebarNav = document.getElementById('sidebarNav');
+      const screenSearch = document.getElementById('screenSearch');
+
+      function getFilteredGroups(query = '') {
+        const q = query.trim().toLowerCase();
+        return guideOrder
+          .map(([group, keys]) => {
+            const items = keys
+              .map((key) => ({ key, doc: window.PAGE_DOCS[key] }))
+              .filter(({ doc }) => {
+                const haystack = [
+                  doc.title,
+                  doc.subtitle,
+                  doc.purpose,
+                  ...(doc.features || []),
+                  ...(doc.userFlow || []),
+                ].join(' ').toLowerCase();
+                return !q || haystack.includes(q);
+              });
+            return [group, items];
+          })
+          .filter(([, items]) => items.length > 0);
+      }
+
+      function renderSidebar(groups) {
+        sidebarNav.innerHTML = groups.map(([group, items]) => `
+          <section class="sidebar-section">
+            <span class="sidebar-label">${group}</span>
+            <div class="sidebar-list">
+              ${items.map(({ key, doc }) => `
+                <a class="sidebar-link" href="./pages/${key}.html">
+                  <div>
+                    <strong>${doc.title}</strong>
+                    <span>${doc.subtitle}</span>
+                  </div>
+                  <em>Open</em>
+                </a>
+              `).join('')}
+            </div>
+          </section>
+        `).join('');
+      }
+
+      function renderAll(query = '') {
+        const groups = getFilteredGroups(query);
+        renderSidebar(groups);
+      }
+
+      screenSearch.addEventListener('input', (event) => renderAll(event.target.value));
+      renderAll();
+    </script>
+  </body>
+</html>

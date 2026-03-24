@@ -4,13 +4,25 @@
   const root = document.getElementById('docRoot');
   if (!doc || !root) return;
 
-  const guideOrder = [
-    ['Start', ['home', 'connect', 'devices']],
-    ['Operation', ['record', 'training', 'inference', 'steering']],
-    ['Data Tools', ['datatools', 'augment', 'visualize', 'kinematics']],
-    ['Annotation', ['sam2', 'detection', 'tt', 'subgoal', 'embedding']],
-    ['Online', ['rtsam', 'rain', 'foundationpose', 'calib', 'pri4r']],
-  ];
+  const GUIDE_ORDERS = {
+    omy: [
+      ['Start', ['home', 'connect', 'devices']],
+      ['Operation', ['record', 'training', 'inference', 'steering']],
+      ['Data Tools', ['datatools', 'augment', 'visualize', 'kinematics']],
+      ['Annotation', ['sam2', 'detection', 'tt', 'subgoal', 'embedding']],
+      ['Online', ['rtsam', 'rain', 'foundationpose', 'calib', 'pri4r']],
+    ],
+    ur5: [
+      ['Start', ['home', 'devices']],
+      ['Operation', ['record']],
+      ['Data Tools', ['datatools', 'visualize', 'kinematics']],
+    ],
+  };
+  const mode = document.body.dataset.mode || 'omy';
+  const guideOrder = GUIDE_ORDERS[mode] || GUIDE_ORDERS.omy;
+
+  const depth = parseInt(document.body.dataset.depth || '1', 10);
+  const BASE = '../'.repeat(depth);
 
   /* ── Markdown frontmatter parser ── */
   function parseFrontmatter(raw) {
@@ -56,7 +68,7 @@
   /* ── Load guide from markdown file ── */
   async function loadGuideKo(pageKey) {
     try {
-      const res = await fetch(`../content/ko/${pageKey}.md`);
+      const res = await fetch(`${BASE}content/ko/${pageKey}.md`);
       if (!res.ok) return null;
       const raw = await res.text();
       const { meta, body } = parseFrontmatter(raw);
@@ -165,7 +177,7 @@
   ];
 
   const actionButtons = [
-    { href: '../index.html', label: 'Docs Home', tone: 'primary' },
+    { href: `${BASE}${mode}/`, label: 'Docs Home', tone: 'primary' },
     { href: '#introduction', label: 'Introduction', tone: 'secondary' },
     { href: '#quickstart', label: 'Quick Start', tone: 'secondary' },
     { href: '#guide', label: '상세 참고', tone: 'secondary' },
@@ -174,7 +186,7 @@
 
   if (prevEntry) {
     actionButtons.push({
-      href: `./${prevEntry.pageKey}.html`,
+      href: `${BASE}${mode}/${prevEntry.pageKey}/`,
       label: `이전: ${prevEntry.pageDoc.title}`,
       tone: 'ghost',
     });
@@ -182,7 +194,7 @@
 
   if (nextEntry) {
     actionButtons.push({
-      href: `./${nextEntry.pageKey}.html`,
+      href: `${BASE}${mode}/${nextEntry.pageKey}/`,
       label: `다음: ${nextEntry.pageDoc.title}`,
       tone: 'ghost',
     });
@@ -198,7 +210,7 @@
         <span class="page-sidebar-label">${escapeHtml(group)}</span>
         <div class="page-sidebar-list">
           ${items.map(({ pageKey, pageDoc }) => `
-            <a class="page-sidebar-link${pageKey === key ? ' is-active' : ''}" href="./${pageKey}.html">
+            <a class="page-sidebar-link${pageKey === key ? ' is-active' : ''}" href="${BASE}${mode}/${pageKey}/">
               <span class="page-sidebar-link-copy">
                 <strong>${escapeHtml(pageDoc.title)}</strong>
                 <em>${escapeHtml(pageDoc.subtitle)}</em>
@@ -215,7 +227,7 @@
     <div class="page-doc-layout">
       <aside class="page-doc-sidebar glass-strong">
         <div class="page-doc-sidebar-head">
-          <img src="../assets/images/logo_nexus.png" alt="PRISM" />
+          <img src="${BASE}assets/images/logo_nexus.png" alt="PRISM" />
           <div>
             <strong>PRISM Manuals</strong>
             <span>Quick page navigation</span>
@@ -305,7 +317,7 @@
             <div class="guide-screenshot">
               ${quickGuide.images.map((img) => `
                 <figure>
-                  <img src="../content/${img.src.replace(/^\.\.\//,'')}" alt="${escapeHtml(img.alt)}" loading="lazy" style="width:100%;border-radius:12px;border:1px solid rgba(168,85,247,0.18);margin-top:1rem;" />
+                  <img src="${BASE}content/${img.src.replace(/^\.\.\//,'')}" alt="${escapeHtml(img.alt)}" loading="lazy" style="width:100%;border-radius:12px;border:1px solid rgba(168,85,247,0.18);margin-top:1rem;" />
                   ${img.alt ? `<figcaption style="text-align:center;opacity:0.6;font-size:0.85rem;margin-top:0.4rem;">${escapeHtml(img.alt)}</figcaption>` : ''}
                 </figure>
               `).join('')}
